@@ -52,23 +52,13 @@ public class LuceneSearcher
 	    /** 
 	     * Creates a new instance of index searcher for basic search and custom search
 	     */
-	 public LuceneSearcher(Boolean isCustomSearch) throws IOException {
+	 public LuceneSearcher() throws IOException {
 
 		 //Create the searcher object from Lucene constants to get the directory name in the constants
 		 searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(LuceneConstants.DIRECTORY_NAME))));
 
-		 if(isCustomSearch) {
-
-	        SimilarityBase2 sb = new SimilarityBase2(); 
-	        searcher.setSimilarity(sb);
-	        methodName = "Custom";
-	        
-		 }else {
-			methodName = "Standard";
-		 }
-
 		 parser = new QueryParser("body", new StandardAnalyzer());
-		 output_file_name = "Output_"+methodName+"_Ranking.txt";
+		 output_file_name = "Output_standard_Ranking.txt";
 
 	    }
 
@@ -184,29 +174,4 @@ public class LuceneSearcher
 
 			}
 		}
-	    
-	    
-	    /**
-	     * Private implementation of SimilarityBase for use in advanced search
-	     *
-	     */
-	    private class SimilarityBase2 extends SimilarityBase{
-	    	
-			@Override
-			protected float score(BasicStats basicStats, float v, float v1)
-			{
-				return v;
-
-			}
-
-			@Override
-			public String toString() {
-				return null;
-			}
-		};
-
-
-
-
-	   
 }
