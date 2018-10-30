@@ -3,12 +3,14 @@ package main.java.indexer;
 import main.java.util.constants;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
 
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+
+import org.apache.lucene.index.IndexOptions;
 
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -90,10 +92,16 @@ class IndexBuilder
 	            	  //We create a document
 	            	  System.out.println("Indexing "+ p.getParaId());
 	            	  Document doc = new Document();
-	            	  
-	            	  //Then we add the paragraph id and the paragraph body for searching
-	            	  doc.add(new StringField("id", p.getParaId(), Field.Store.YES));
-	            	  doc.add(new TextField("body", p.getTextOnly(), Field.Store.YES));
+
+					 FieldType contentType = new FieldType();
+					 contentType.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS);
+					 contentType.setStored(true);
+					 contentType.setTokenized(true);
+					 contentType.setStoreTermVectors(true);
+
+					//Then we add the paragraph id and the paragraph body for searching
+					doc.add(new StringField("id", p.getParaId(), Field.Store.YES));
+					doc.add(new Field("body", p.getTextOnly(), contentType));
 	            	  
 	            	  //From here we add the document to the indexwriter
 

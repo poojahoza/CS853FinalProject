@@ -57,18 +57,8 @@ public class Searcher {
 		 //Create the searcher object from Lucene constants to get the directory name in the constants
 		 searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(constants.DIRECTORY_NAME))));
 
-		 if(isCustomSearch) {
-
-	        SimilarityBase2 sb = new SimilarityBase2(); 
-	        searcher.setSimilarity(sb);
-	        methodName = "Custom";
-	        
-		 }else {
-			methodName = "Standard";
-		 }
-
 		 parser = new QueryParser("body", new StandardAnalyzer());
-		 output_file_name = "Output_"+methodName+"_Ranking.txt";
+		 output_file_name = "Output_BM25_Ranking.txt";
 
 	    }
 
@@ -184,30 +174,5 @@ public class Searcher {
 
 			}
 		}
-	    
-	    
-	    /**
-	     * Private implementation of SimilarityBase for use in advanced search
-	     *
-	     */
-	    private class SimilarityBase2 extends SimilarityBase{
-	    	
-			@Override
-			protected float score(BasicStats basicStats, float v, float v1)
-			{
-				return v;
-
-			}
-
-			@Override
-			public String toString() {
-				return null;
-			}
-		};
-
-
-
-
-	   
 }
 
