@@ -30,7 +30,7 @@ public class projectMain
         /**
          * Run the queries
          * @param args file path for the corpus
-         * @throws IOException if things go wrong
+         * @throws IO Exception if things go wrong
          */
 
         public static void main(String[] args) throws IOException
