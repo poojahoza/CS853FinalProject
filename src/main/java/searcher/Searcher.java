@@ -47,20 +47,8 @@ public class Searcher {
 	 {
 		 searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(constants.DIRECTORY_NAME))));
 		 parser = new QueryParser("body", new StandardAnalyzer());
-	 }
-
-	    /** 
-	     * Creates a new instance of index searcher for basic search and custom search
-	     */
-	 public Searcher(Boolean isCustomSearch) throws IOException {
-
-		 //Create the searcher object from Lucene constants to get the directory name in the constants
-		 searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(constants.DIRECTORY_NAME))));
-
-		 parser = new QueryParser("body", new StandardAnalyzer());
 		 output_file_name = "Output_BM25_Ranking.txt";
-
-	    }
+	 }
 
 	    /**
 	     * 

@@ -5,11 +5,17 @@ import java.io.IOException;
 import main.java.indexer.IndexBuilder;
 import main.java.searcher.Searcher;
 import main.java.util.constants;
+import main.java.util.Util;
+
+/**
+ * Main Class to handle the running of the method
+ * @author Pooja Oza
+ *
+ */
 
 public class projectMain
-{
 
-    {
+{
         /**
          * Lets user know they did not use the correct file path
          */
@@ -38,19 +44,20 @@ public class projectMain
             else
             {
                 dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
-                LuceneConstants.setIndexFileName(args[0]);
-                LuceneConstants.setDirectoryName(dest);
+                constants.setIndexFileName(args[0]);
+                constants.setDirectoryName(dest);
 
-                LuceneConstants.setOutlineCbor(args[1]);
-                LuceneConstants.setQrelPath(args[2]);
+                constants.setOutlineCbor(args[1]);
+                constants.setQrelPath(args[2]);
 
                 //Create the new lucene Index
-                LuceneIndexer l = new LuceneIndexer();
+                Indexer l = new IndexBuilder();
                 l.getIndexWriter();
 
-                Map<String,String> p = LuceneUtil.readOutline(LuceneConstants.OUTLINE_CBOR);
+                Map<String,String> p = Util.readOutline(constants.OUTLINE_CBOR);
 
-                LuceneSearcher BM25Searcher = new LuceneSearcher();
+                Searcher BM25Searcher = new Searcher();
+                BM25Searcher.writeRankings();
 
                 System.out.println("-----------------------------------------------------------------------------");
 
