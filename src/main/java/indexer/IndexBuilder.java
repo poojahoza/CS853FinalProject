@@ -29,11 +29,11 @@ import java.io.FileNotFoundException;
  * @author Team 3!
  *
  */
-class IndexBuilder
+public class IndexBuilder
 {
 		private IndexWriter indexWriter;
 
-		IndexBuilder()
+		public IndexBuilder()
 		{
 			indexWriter = null;
 		}
