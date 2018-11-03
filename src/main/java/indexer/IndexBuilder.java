@@ -122,9 +122,7 @@ public class IndexBuilder
 			closeIndexWriter();
 	            
 		 }
-
-
-
+		 
 	 /**
 	  * Closes the indexwriter so that we can use it in searching
 	  * @throws IOException

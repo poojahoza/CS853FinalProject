@@ -27,4 +27,5 @@ public class constants
         OUTLINE_CBOR= d;
     }
     public static void setQrelPath(String d){ QREL_PATH= d;}
+
 }

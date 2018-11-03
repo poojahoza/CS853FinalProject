@@ -88,7 +88,7 @@ public class Searcher {
 	    /**
 	     * 
 	     */
-	    private List<String> getRankings(ScoreDoc[] scoreDocs, String queryId)
+	    protected List<String> getRankings(ScoreDoc[] scoreDocs, String queryId)
 	    	    throws IOException {
 	    	
 	    	List<String> rankings = new ArrayList<String>();
@@ -107,6 +107,7 @@ public class Searcher {
 				String docScore = String.valueOf(scoringDoc.score);
 				String paraId = rankedDoc.getField("id").stringValue();
 				//String paraBody = rankedDoc.getField("body").stringValue();
+
 				String paraRank = String.valueOf(ind+1);
 				rankings.add(queryId + " Q0 " + paraId + " " + paraRank + " " + docScore + " "+teamName + "-" + methodName);
 				createRankingQueryDocPair(queryId, paraId, Integer.valueOf(paraRank));
@@ -145,7 +146,6 @@ public class Searcher {
 			{
 				try {
 					TopDocs searchDocs = this.performSearch(m.getValue(), 100);
-					
 					ScoreDoc[] scoringDocuments = searchDocs.scoreDocs;
 					List<String> formattedRankings = this.getRankings(scoringDocuments, m.getKey());
 					Files.write(file, formattedRankings, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
