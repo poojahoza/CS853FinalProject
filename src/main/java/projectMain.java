@@ -6,6 +6,12 @@ import main.java.searcher.BM25;
 import main.java.searcher.Searcher;
 import main.java.util.constants;
 import main.java.util.Util;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+
+
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class projectMain
@@ -33,21 +39,33 @@ public class projectMain
             constants.setOutlineCbor(args[1]);
             constants.setQrelPath(args[2]);
 
-//            //Create the new lucene Index
-//            IndexBuilder l = new IndexBuilder();
-//            l.getIndexWriter();
-
             Map<String,String> p = Util.readOutline(constants.OUTLINE_CBOR);
 
-//            Searcher BM25Searcher = new Searcher();
-//            BM25Searcher.writeRankings(p);
 
 
-            BM25 b= new BM25(100);
+            BM25 b = new BM25(100);
 
-            b.runRanking(p);
-            Map<String,Map<String,Integer>> t = b.getRankings();
-            Util.DisplayMap(t);
+            Map<String,Integer> knn = new LinkedHashMap<>();
+
+            for(Map.Entry<String, String> m:p.entrySet())
+            {
+                TopDocs t = b.returnTopDocs(m.getValue());
+                ScoreDoc[] s =t.scoreDocs;
+                for(ScoreDoc val: s)
+                {
+                    String ans = b.getDocument(val.doc);
+
+                    String[] split = ans.split(" ");
+
+                    for(String ss:split)
+                    {
+                       knn.put(ss,0);
+                    }
+                }
+            }
+
+
+
         }
 
     }

@@ -121,4 +121,20 @@ public class BM25 extends Searcher
             return t;
         }
 
+        public String getDocument(int docID)
+        {
+            String docString=null;
+            try
+            {
+                Document rankedDoc = searcher.doc(docID);
+                docString = rankedDoc.getField("body").stringValue();
+
+            }
+            catch (IOException io)
+            {
+                    System.out.println(io.getMessage());
+            }
+            return docString;
+        }
+
 }
