@@ -1,6 +1,6 @@
 package main.java.searcher;
-
 import org.apache.lucene.document.Document;
+import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -35,6 +35,11 @@ public class BM25 extends Searcher
             output_file_name = "BM25";
         }
 
+        public IndexSearcher getSearcher()
+        {
+            return searcher;
+        }
+
         public Map<String,Map<String,Integer>> getRankings()
         {
             return ranks;
@@ -65,7 +70,7 @@ public class BM25 extends Searcher
                 }
                 else
                 {
-                    Map<String,Integer> temp = new LinkedHashMap<String,Integer>();
+                    Map<String,Integer> temp = new LinkedHashMap<>();
                     temp.put(inner_key, rank);
                     ranks.put(outer_key,temp);
                 }
@@ -88,7 +93,7 @@ public class BM25 extends Searcher
                 }
             }
 
-        public void runRanking(Map<String,String> out)
+        private void runRanking(Map<String,String> out)
         {
             for(Map.Entry<String,String> m:out.entrySet())
             {
@@ -121,6 +126,10 @@ public class BM25 extends Searcher
             return t;
         }
 
+        public void setK(int k)
+        {
+            this.k = k;
+        }
         public String getDocument(int docID)
         {
             String docString=null;
