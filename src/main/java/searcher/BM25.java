@@ -17,7 +17,7 @@ public class BM25 extends Searcher
         /*Data it holds after performing the private search*/
         private Map<String, Map<String,Integer>> ranks;
         private int k;
-        private String methodname = "BM25";
+
 
 
         public BM25() throws IOException
@@ -33,6 +33,12 @@ public class BM25 extends Searcher
             this.ranks = new LinkedHashMap<String, Map<String, Integer>>();
             this.k=k;
             output_file_name = "BM25";
+        }
+
+        public void setmethodName(String mName)
+        {
+            this.methodName= mName;
+            this.output_file_name = "output_"+ methodName+"_ranking.txt";
         }
 
         public IndexSearcher getSearcher()
@@ -58,7 +64,7 @@ public class BM25 extends Searcher
 
         public String getMethodname()
         {
-            return methodname;
+            return this.methodName;
         }
 
           private void createRankingQueryDocPair(String outer_key, String inner_key, Integer rank)

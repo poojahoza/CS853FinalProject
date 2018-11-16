@@ -1,18 +1,18 @@
 package main.java;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
-import main.java.indexer.IndexBuilder;
-import main.java.searcher.BM25;
-import main.java.searcher.Searcher;
+import main.java.queryexpansion.ExpansionUtils;
+import main.java.queryexpansion.QueryExpansion;
 import main.java.util.constants;
 import main.java.util.Util;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 
-import java.util.LinkedHashMap;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.Properties;
 
 public class projectMain
 {
@@ -38,31 +38,13 @@ public class projectMain
 
             constants.setOutlineCbor(args[1]);
             constants.setQrelPath(args[2]);
-
             Map<String,String> p = Util.readOutline(constants.OUTLINE_CBOR);
 
+            QueryExpansion q= new QueryExpansion("test",p);
+
+            q.KNN();
 
 
-            BM25 b = new BM25(100);
-
-            Map<String,Integer> knn = new LinkedHashMap<>();
-
-            for(Map.Entry<String, String> m:p.entrySet())
-            {
-                TopDocs t = b.returnTopDocs(m.getValue());
-                ScoreDoc[] s =t.scoreDocs;
-                for(ScoreDoc val: s)
-                {
-                    String ans = b.getDocument(val.doc);
-
-                    String[] split = ans.split(" ");
-
-                    for(String ss:split)
-                    {
-                       knn.put(ss,0);
-                    }
-                }
-            }
 
 
 

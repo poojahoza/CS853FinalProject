@@ -1,42 +1,88 @@
 package main.java.queryexpansion;
 
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Properties;
+import main.java.searcher.BM25;
+import java.io.IOException;
+import java.util.*;
 
 public class QueryExpansion
 {
-        private String methodname="";
-        private Map<String,String> query;
-        private Map<String, ArrayList<Double>> glove;
-        private ExpansionUtils exp = null;
-        private Properties prop= null;
+        private String METHOD_NAME="";
+        private Map<String, ArrayList<Double>> GLOVE = null;
+        private ExpansionUtils EXP = null;
+        private Properties PROP= null;
+        private BM25 bm25 =null;
+        private Map<String,String> OUTLINE = null;
+        private ArrayList<String> STOP_WORDS = null;
 
-        public QueryExpansion()
+        private  QueryExpansion()
         {
-            exp = new ExpansionUtils();
-            query = new LinkedHashMap<>();
-            prop = exp.returnProp();
-
+            try
+            {
+                bm25 = new BM25();
+            }catch (IOException e)
+            {
+                System.out.println(e.getMessage());
+            }
+            EXP = new ExpansionUtils();
+            PROP = EXP.returnProp();
+            STOP_WORDS = new ArrayList<>(Arrays.asList(EXP.getStopList()));
         }
-        public QueryExpansion(String mName)
+
+        public QueryExpansion(String mName,Map<String,String> OUTLINE)
         {
             this();
-            this.methodname = mName;
+            this.OUTLINE = OUTLINE;
+            this.METHOD_NAME = mName;
         }
 
         private void readVector()
         {
-            String filename = prop.getProperty("GloveFile");
-            glove = exp.readWordVectors(filename);
+            GLOVE = EXP.readWordVectors(PROP.getProperty("glovefile-50d"));
         }
 
-        public void DisplayVector()
+
+        void getHighestIDF(TreeMap<Float,String> tree)
         {
-            exp.DisplayVectors(glove);
+
+
         }
+
+
+        private String nearestWords(String queryTerm) throws IOException
+        {
+            StringBuilder s= new StringBuilder();
+            String[] tokens = queryTerm.split(" ");
+            for(String tok:tokens)
+            {
+                if(!STOP_WORDS.contains(tok))
+                {
+                    System.out.println(tok +"-----> " + EXP.returnIDF(tok));
+                }
+            }
+
+            return null;
+
+        }
+
+        private Map<String,String> returnNN() throws IOException
+        {
+            Map<String,String> newQuery = new LinkedHashMap<>();
+            if(GLOVE==null) readVector();
+
+            for(Map.Entry<String,String> q :OUTLINE.entrySet())
+            {
+                    nearestWords(q.getValue().toLowerCase());
+            }
+            return newQuery;
+        }
+
+        public void KNN() throws IOException
+        {
+            Map<String,String> newQ = returnNN();
+        }
+
+
+
 
 
 }
