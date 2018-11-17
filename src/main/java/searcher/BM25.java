@@ -67,35 +67,35 @@ public class BM25 extends Searcher
             return this.methodName;
         }
 
-          private void createRankingQueryDocPair(String outer_key, String inner_key, Integer rank)
+          private void createRankingQueryDocPair(String outer_key, String inner_key, Integer docID)
           {
                 if(ranks.containsKey(outer_key))
                 {
                     Map<String, Integer> extract = ranks.get(outer_key);
-                    extract.put(inner_key, rank);
+                    extract.put(inner_key, docID);
                 }
                 else
                 {
                     Map<String,Integer> temp = new LinkedHashMap<>();
-                    temp.put(inner_key, rank);
+                    temp.put(inner_key, docID);
                     ranks.put(outer_key,temp);
                 }
             }
 
-            private void updateRankings(ScoreDoc[] scoreDocs, String queryId) throws IOException
+    /**
+     *
+     * @param scoreDocs
+     * @param queryId
+     * @throws IOException
+     * @apiNote Returns the DocID associated with the paraID
+     */
+    private void updateRankings(ScoreDoc[] scoreDocs, String queryId) throws IOException
             {
-                for(int ind=0; ind<scoreDocs.length; ind++)
+                for(ScoreDoc s:scoreDocs)
                 {
-
-                    ScoreDoc scoringDoc = scoreDocs[ind];
-
-                    //Create the rank document from searcher
-                    Document rankedDoc = searcher.doc(scoringDoc.doc);
-
-                    String docScore = String.valueOf(scoringDoc.score);
+                    Document rankedDoc = searcher.doc(s.doc);
                     String paraId = rankedDoc.getField("id").stringValue();
-                    String paraRank = String.valueOf(ind+1);
-                    createRankingQueryDocPair(queryId, paraId, Integer.valueOf(paraRank));
+                    createRankingQueryDocPair(queryId, paraId, s.doc);
                 }
             }
 
@@ -136,6 +136,7 @@ public class BM25 extends Searcher
         {
             this.k = k;
         }
+
         public String getDocument(int docID)
         {
             String docString=null;
@@ -143,7 +144,6 @@ public class BM25 extends Searcher
             {
                 Document rankedDoc = searcher.doc(docID);
                 docString = rankedDoc.getField("body").stringValue();
-
             }
             catch (IOException io)
             {

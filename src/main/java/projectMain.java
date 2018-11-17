@@ -40,9 +40,9 @@ public class projectMain
             constants.setQrelPath(args[2]);
             Map<String,String> p = Util.readOutline(constants.OUTLINE_CBOR);
 
-            QueryExpansion q= new QueryExpansion("test",p);
+            QueryExpansion q= new QueryExpansion("BM25",p);
 
-            q.KNN();
+            q.PRF(100);
 
 
 

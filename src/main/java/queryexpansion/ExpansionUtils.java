@@ -1,28 +1,49 @@
 package main.java.queryexpansion;
 
 /*Import statements from the CS853 package*/
+import main.java.searcher.BM25;
 import main.java.util.constants;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
+import org.apache.lucene.index.*;
 import org.apache.lucene.search.CollectionStatistics;
 import org.apache.lucene.search.TermStatistics;
 import org.apache.lucene.search.similarities.BasicStats;
 import org.apache.lucene.store.FSDirectory;
 
+
 /*Import statements from the java*/
 import java.io.*;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
+import java.util.Collections;
 
+class Heap
+{
+    private String term = null;
+    private Double val = 0.0;
+    Heap(String term,Double val)
+    {
+        this.term=term;
+        this.val=val;
+    }
+    public String getTerm() { return term; }
+    public Double getValue() { return val; }
+}
+
+class HeapComparator implements Comparator<Heap>
+{
+    @Override
+    public int compare(Heap o1, Heap o2) {
+        return -o1.getValue().compareTo(o2.getValue());
+    }
+}
 
 public class ExpansionUtils
 {
-
         private IndexReader indexReader  = null;
+        private BM25 EXP_BM25= null;
+        private Properties PROP= null;
+        private Map<String, ArrayList<Double>> GLOVE = null;
+        private int k_val=10;
 
         private  String[] array = {"a", "about", "above", "above", "across", "after", "afterwards", "again", "against", "all", "almost", "alone", "along", "already",
                   "also","although","always","am","among", "amongst", "amoungst", "amount",  "an", "and", "another", "any","anyhow","anyone","anything","anyway",
@@ -44,12 +65,37 @@ public class ExpansionUtils
                   "which", "while", "whither", "who", "whoever", "whole", "whom", "whose", "why", "will", "with", "within", "without", "would", "yet", "you", "your", "yours",
                   "yourself", "yourselves", "the"};
 
+        private ArrayList<String> STOP_WORDS = new ArrayList<>(Arrays.asList(array));
+
         public ExpansionUtils()
         {
             indexReader = getIndexReader();
+            try
+            {
+                EXP_BM25 = new BM25();
+            }catch (IOException e)
+            {
+                System.out.println(e.getMessage());
+            }
+            PROP = this.returnProp();
+
         }
 
-       public Map<String, ArrayList<Double>> readWordVectors(String fname) {
+        private void readVector()
+        {
+            GLOVE = this.readWordVectors(PROP.getProperty("glovefile-50d"));
+        }
+
+        public void ensureLoadGlove()
+        {
+            if(GLOVE == null)
+            {
+                readVector();
+            }
+        }
+
+        private Map<String, ArrayList<Double>> readWordVectors(String fname)
+        {
 
            BufferedReader br = null;
            Map<String, ArrayList<Double>> vector = new LinkedHashMap<>();
@@ -96,7 +142,7 @@ public class ExpansionUtils
             return 0.0;
         }
 
-        double DotProduct(ArrayList<Double> v1,ArrayList<Double> v2)
+        private double DotProduct(ArrayList<Double> v1,ArrayList<Double> v2)
         {
             assert(v1.size() == v2.size());
             double val = 0.0;
@@ -108,7 +154,7 @@ public class ExpansionUtils
             return val;
         }
 
-        double CosineSimilarity(ArrayList<Double> v1,ArrayList<Double> v2)
+       private double CosineSimilarity(ArrayList<Double> v1,ArrayList<Double> v2)
         {
             assert(v1.size() == v2.size());
             double val = 0.0;
@@ -126,7 +172,7 @@ public class ExpansionUtils
             return val/(Math.sqrt(x_vector) * Math.sqrt(y_vector));
         }
 
-        Properties returnProp()
+        private Properties returnProp()
         {
             Properties prop = new Properties();
             InputStream input = null;
@@ -140,7 +186,7 @@ public class ExpansionUtils
             return prop;
         }
 
-        private IndexReader getIndexReader()
+         private IndexReader getIndexReader()
         {
             IndexReader index =null;
             try
@@ -153,7 +199,7 @@ public class ExpansionUtils
             return index;
         }
 
-       public BasicStats getBasicStats(Term myTerm, float queryBoost) throws IOException {
+        private BasicStats getBasicStats(Term myTerm, float queryBoost) throws IOException {
         String fieldName = myTerm.field();
 
         CollectionStatistics collectionStats = new CollectionStatistics(
@@ -199,11 +245,10 @@ public class ExpansionUtils
         myStats.setAvgFieldLength(avgFieldLength);
         myStats.setDocFreq(docFreq);
         myStats.setTotalTermFreq(totalTermFreq);
-
         return myStats;
     }
 
-    public String[] getStopList()
+    String[] getStopList()
     {
         return array;
     }
@@ -221,6 +266,100 @@ public class ExpansionUtils
             return 0.0;
         }
         return d;
+    }
+
+    /**
+     *
+     * @param sb
+     * @return ArrayList<String>
+     * @apiNote Returns the processed string list, also lower case the documents and remove STOP_WORDS.
+     */
+
+    private ArrayList<String> processDocument(StringBuilder sb)
+    {
+        String[] data = processQuery(sb.toString());
+        ArrayList<String> processedData= new ArrayList<>();
+        for(String s:data)
+        {
+           if(!STOP_WORDS.contains(s))
+           {
+               if(!processedData.contains(s))
+                     processedData.add(s);
+           }
+        }
+        return processedData;
+    }
+
+    private String[] processQuery(String query)
+    {
+        return query.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
+
+    }
+
+    private String getTopK(PriorityQueue<Heap> q,String OriginalQueryTerms)
+    {
+        int c=0;
+        StringBuilder build= new StringBuilder();
+        build.append(OriginalQueryTerms);
+        build.append(" ");
+        while(!q.isEmpty())
+        {
+            c++;
+            Heap val= q.poll();
+            build.append(val.getTerm());
+            build.append(" ");
+            if(c==k_val) break;
+        }
+        return build.toString();
+    }
+
+    private String topKTerms(ArrayList<String> processed,String OriginalQueryTerms)
+    {
+        ensureLoadGlove();
+        PriorityQueue<Heap> queue= new PriorityQueue<>(new HeapComparator());
+
+        for(String oTerms:processQuery(OriginalQueryTerms))
+        {
+            if(!GLOVE.containsKey(oTerms)) {continue;}
+
+            ArrayList<Double> v1 = GLOVE.get(oTerms); //Original vector
+
+            for(String cTerms:processed)
+            {
+                if(GLOVE.containsKey(cTerms))
+                {
+                    ArrayList<Double> v2 = GLOVE.get(cTerms);
+                    Double val =DotProduct(v1,v2);
+                    queue.add( new Heap(cTerms,val));
+                }
+
+            }
+        }
+        return getTopK(queue,OriginalQueryTerms);
+    }
+
+    /**
+     *
+     * @param docList
+     * @param k
+     * @apiNote Takes the Map as input which has ParaID and the DocumentID, takes top k document to find
+     * the candidate terms
+     */
+
+     String getTopKTerms(Map<String,Integer> docList,int k,String QueryTerms) {
+
+        int k_value = docList.size() > k ? k : docList.size();
+        int counter =0;
+        StringBuilder build = new StringBuilder();
+        for(Map.Entry<String,Integer> doc : docList.entrySet())
+        {
+            counter++;
+            String docString = EXP_BM25.getDocument(doc.getValue());
+            build.append(docString);
+            if(counter == k_value) break;
+        }
+        ArrayList<String> processed= processDocument(build);
+        return topKTerms(processed,QueryTerms);
     }
 
 }
