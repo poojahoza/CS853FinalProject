@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import main.java.indexer.IndexBuilder;
 import main.java.queryexpansion.ExpansionUtils;
 import main.java.queryexpansion.QueryExpansion;
 import main.java.util.constants;
@@ -34,15 +35,20 @@ public class projectMain
         {
             dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
             constants.setIndexFileName(args[0]);
-            constants.setDirectoryName("indexed_file");
+            //constants.setDirectoryName("indexed_file");
+            constants.setDirectoryName(dest);
 
             constants.setOutlineCbor(args[1]);
             constants.setQrelPath(args[2]);
             Map<String,String> p = Util.readOutline(constants.OUTLINE_CBOR);
 
-            QueryExpansion q= new QueryExpansion(p);
-            q.runPRF("PRF",10);
-            q.runPrfIndividual("PRF_Individual",10);
+//            QueryExpansion q= new QueryExpansion(p);
+//            q.runPRF("PRF",10);
+//            q.runPrfIndividual("PRF_Individual",10);
+
+//            IndexBuilder l =new IndexBuilder();
+//            l.getIndexWriter();
+
 
         }
     }

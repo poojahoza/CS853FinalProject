@@ -18,11 +18,9 @@ import org.apache.lucene.store.FSDirectory;
 import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 import edu.unh.cs.treccar_v2.Data;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Paths;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.util.stream.StreamSupport;
 
 /**
  * Creates the index for the given corpus
@@ -32,6 +30,7 @@ import java.io.FileNotFoundException;
 public class IndexBuilder
 {
 		private IndexWriter indexWriter;
+		private static int increment=0;
 
 		public IndexBuilder()
 		{
@@ -66,6 +65,41 @@ public class IndexBuilder
 	           
 	        }
 	   }
+
+	   private void writePara(Data.Paragraph p,IndexWriter i)
+	   {
+
+		   System.out.println("Indexing "+ p.getParaId());
+		   Document doc = new Document();
+
+		   FieldType contentType = new FieldType();
+		   contentType.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS);
+		   contentType.setStored(true);
+		   contentType.setTokenized(true);
+		   contentType.setStoreTermVectors(true);
+
+		   //Then we add the paragraph id and the paragraph body for searching
+		   doc.add(new StringField("id", p.getParaId(), Field.Store.YES));
+		   doc.add(new Field("body", p.getTextOnly(), contentType));
+
+		   //From here we add the document to the indexwriter
+
+		   try {
+			   indexWriter.addDocument(doc);
+			   increment++;
+
+			   //commit the Data after 50 paragraph
+
+			   if(increment % 50 ==0)
+			   {
+				   indexWriter.commit();
+			   }
+		   }catch(IOException ioe) {
+			   System.out.println(ioe.getMessage());
+		   }
+	   }
+
+
 	    
 	 /**
 	  * Actually parses the paragraph from the mode parameters
@@ -74,51 +108,25 @@ public class IndexBuilder
 	  */
 	 private void parseParagraph(IndexWriter indexWriter)
 	 {
-		 
-				// this function shoudl take care of the Reading the CBOR file and indexing it
-	            FileInputStream fileInputStream2 = null;
+
+	 			BufferedInputStream bStream =null;
+
 	            try {
-	            	fileInputStream2 = new FileInputStream(new File(constants.FILE_NAME));
+					bStream = new BufferedInputStream(new FileInputStream(new File(constants.FILE_NAME)));
 	            }catch(FileNotFoundException fnf) {
 	            	System.out.println(fnf.getMessage());
 	     
 	            }
 
-	            int increment=0;
-	            //For each of the paragraphs from the deserialized inputstream
-	            for(Data.Paragraph p: DeserializeData.iterableParagraphs(fileInputStream2))
-	            {
+		 		Iterable<Data.Paragraph> para = DeserializeData.iterableParagraphs(bStream);
+	            StreamSupport.stream(para.spliterator(), true)
+						 .forEach(paragraph ->
+						 {
+							 writePara(paragraph,indexWriter);
 
-	            	  //We create a document
-	            	  System.out.println("Indexing "+ p.getParaId());
-	            	  Document doc = new Document();
+						 });
 
-					 FieldType contentType = new FieldType();
-					 contentType.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS);
-					 contentType.setStored(true);
-					 contentType.setTokenized(true);
-					 contentType.setStoreTermVectors(true);
 
-					//Then we add the paragraph id and the paragraph body for searching
-					doc.add(new StringField("id", p.getParaId(), Field.Store.YES));
-					doc.add(new Field("body", p.getTextOnly(), contentType));
-	            	  
-	            	  //From here we add the document to the indexwriter
-
-	            	  try {
-	            		  indexWriter.addDocument(doc);
-						  increment++;
-
-						  //commit the Data after 50 paragraph
-
-						  if(increment % 50 ==0)
-						  {
-								indexWriter.commit();
-						  }
-	            	  }catch(IOException ioe) {
-	            		  System.out.println(ioe.getMessage());
-	            	  }
-	            }
 			closeIndexWriter();
 	            
 		 }
