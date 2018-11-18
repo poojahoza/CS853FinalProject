@@ -40,15 +40,10 @@ public class projectMain
             constants.setQrelPath(args[2]);
             Map<String,String> p = Util.readOutline(constants.OUTLINE_CBOR);
 
-            QueryExpansion q= new QueryExpansion("BM25",p);
-
-            q.PRF(100);
-
-
-
-
+            QueryExpansion q= new QueryExpansion(p);
+            q.runPRF("PRF",10);
+            q.runPrfIndividual("PRF_Individual",10);
 
         }
-
     }
 }

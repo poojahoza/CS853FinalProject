@@ -19,7 +19,6 @@ public class BM25 extends Searcher
         private int k;
 
 
-
         public BM25() throws IOException
         {
             super();
@@ -90,14 +89,14 @@ public class BM25 extends Searcher
      * @apiNote Returns the DocID associated with the paraID
      */
     private void updateRankings(ScoreDoc[] scoreDocs, String queryId) throws IOException
-            {
+    {
                 for(ScoreDoc s:scoreDocs)
                 {
                     Document rankedDoc = searcher.doc(s.doc);
                     String paraId = rankedDoc.getField("id").stringValue();
                     createRankingQueryDocPair(queryId, paraId, s.doc);
                 }
-            }
+    }
 
         private void runRanking(Map<String,String> out)
         {
