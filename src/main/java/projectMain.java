@@ -42,13 +42,13 @@ public class projectMain
             constants.setQrelPath(args[2]);
             Map<String,String> p = Util.readOutline(constants.OUTLINE_CBOR);
 
-//            QueryExpansion q= new QueryExpansion(p);
-//            q.runPRF("PRF",10);
-//            q.runPrfIndividual("PRF_Individual",10);
+            QueryExpansion q= new QueryExpansion(p);
 
-//            IndexBuilder l =new IndexBuilder();
-//            l.getIndexWriter();
-
+            q.runBM25("BM25",10);
+            q.runPRF("PRF",10);
+            q.runPrfIndividual("PRF_PER_QUERY_TERM",10);
+            q.runPrfIndividualIDF("PRF_IDF",10);
+            q.runPrfIndividualDF("PRF_DF",10);
 
         }
     }

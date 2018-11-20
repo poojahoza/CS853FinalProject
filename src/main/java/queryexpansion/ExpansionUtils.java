@@ -23,8 +23,11 @@ public class ExpansionUtils
         private BM25 EXP_BM25= null;
         private Properties PROP= null;
         private Map<String, ArrayList<Double>> GLOVE = null;
+
+        /*some K values*/
         private int MAX_DOC = 5;
         private int MAX_TERM=10;
+        private int MAX_IDF_TERM=5;
 
         private  String[] array = {"a", "about", "above", "above", "across", "after", "afterwards", "again", "against", "all", "almost", "alone", "along", "already",
                   "also","although","always","am","among", "amongst", "amoungst", "amount",  "an", "and", "another", "any","anyhow","anyone","anything","anyway",
@@ -115,7 +118,7 @@ public class ExpansionUtils
        }
 
 
-        public void DisplayVectors(Map<String,ArrayList<Double>> vec)
+        private void DisplayVectors(Map<String,ArrayList<Double>> vec)
         {
             for(Map.Entry<String,ArrayList<Double>> m:vec.entrySet())
             {
@@ -126,6 +129,14 @@ public class ExpansionUtils
                     ++i;
                     System.out.println(i+"<--------->"+A);
                 }
+            }
+        }
+
+        public void DisplayRunResult(Map<String,String> vec)
+        {
+            for(Map.Entry<String,String> m:vec.entrySet())
+            {
+                System.out.println(m.getKey()+ "---->"+ m.getValue());
             }
         }
 
@@ -256,6 +267,21 @@ public class ExpansionUtils
         return d;
     }
 
+    long getDF(String s) throws  IOException
+    {
+        Term t= new Term("body",s);
+        BasicStats b = getBasicStats(t,1);
+        long d = 0;
+
+        if(b.getDocFreq()!=0)
+        {
+            d = b.getDocFreq();
+            return d;
+        }
+
+        return d;
+    }
+
 
     private String getTopK(Map<String,Double> q,String OriginalQueryTerms)
     {
@@ -305,6 +331,10 @@ public class ExpansionUtils
     {
         return query.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
     }
+    private String[] processOriginalTerms(String query)
+    {
+        return query.toLowerCase().split(" ");
+    }
 
     private ArrayList<String> processDocument(StringBuilder sb)
     {
@@ -335,7 +365,8 @@ public class ExpansionUtils
     private ArrayList<String> getTopTermsPerQueryTerm(ArrayList<String> processed,String OriginalQueryTerms)
     {
         ensureLoadGlove();
-        String[] split = OriginalQueryTerms.split(" ");
+        //String[] split = OriginalQueryTerms.split(" ");
+        String[] split=processOriginalTerms(OriginalQueryTerms);
         ArrayList<String> topTerms = new ArrayList<>(Arrays.asList(split));
 
         for(String oTerms:processQuery(OriginalQueryTerms))
@@ -348,7 +379,7 @@ public class ExpansionUtils
 
             for(String cTerms:processed)
             {
-                if(GLOVE.containsKey(cTerms))
+                if(GLOVE.containsKey(cTerms) && !oTerms.equals(cTerms))
                 {
                     ArrayList<Double> v2 = GLOVE.get(cTerms);
                     Double val = CosineSimilarity(v1,v2);
@@ -356,14 +387,42 @@ public class ExpansionUtils
                 }
              }
                 /*Concatenate each term*/
+            if(!eachQueryTerm.isEmpty())
+            {
                 ArrayList<String> temp = getTopK(eachQueryTerm);
                 for(String s:temp)
                 {
                     topTerms.add(s);
 
                 }
+
+            }
+
         }
         return topTerms;
+    }
+
+    private Map<String,Double> sortMAP(Map<String,Double> q)
+    {
+
+        Map<String, Double> sorted = new LinkedHashMap<>();
+        q.entrySet().stream()
+                .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
+                .forEachOrdered(x -> sorted.put(x.getKey(), x.getValue()));
+
+        return sorted;
+
+    }
+
+    private Map<String,Long> sortMAP(Map<String,Long> q, int n)
+    {
+        Map<String, Long> sorted = new LinkedHashMap<>();
+        q.entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .forEachOrdered(x -> sorted.put(x.getKey(), x.getValue()));
+
+        return sorted;
+
     }
 
     private Map<String,Double> getTopTerms(ArrayList<String> processed,String OriginalQueryTerms)
@@ -378,7 +437,7 @@ public class ExpansionUtils
 
             for(String cTerms:processed)
             {
-                if(GLOVE.containsKey(cTerms))
+                if(GLOVE.containsKey(cTerms) && !oTerms.equals(cTerms))
                 {
                     ArrayList<Double> v2 = GLOVE.get(cTerms);
                     Double val = CosineSimilarity(v1,v2);
@@ -387,12 +446,13 @@ public class ExpansionUtils
             }
         }
 
-        Map<String, Double> result2 = new LinkedHashMap<>();
-        topTerms.entrySet().stream()
-                .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
-                .forEachOrdered(x -> result2.put(x.getKey(), x.getValue()));
+//        Map<String, Double> result2 = new LinkedHashMap<>();
+//        topTerms.entrySet().stream()
+//                .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
+//                .forEachOrdered(x -> result2.put(x.getKey(), x.getValue()));
 
-        return result2;
+       // return result2;
+        return sortMAP(topTerms);
     }
 
 
@@ -412,6 +472,66 @@ public class ExpansionUtils
         return build;
     }
 
+        private ArrayList<String> IDF(ArrayList<String> q,String OriginalQueryTerms)
+        {
+            Map<String,Double> unsorted = new LinkedHashMap<>();
+
+            for(String s:q)
+            {
+                double val=0.0;
+                try {
+                    val = getIDF(s);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                unsorted.put(s,val);
+            }
+            Map<String,Double> sorted = sortMAP(unsorted);
+
+            String[] split=processOriginalTerms(OriginalQueryTerms);
+            ArrayList<String> topTerms = new ArrayList<>(Arrays.asList(split));
+            int c=0;
+            for(Map.Entry<String,Double> m:sorted.entrySet())
+            {
+                c++;
+                topTerms.add(m.getKey());
+                if(c==MAX_TERM) break;
+            }
+
+                 return topTerms;
+        }
+
+        private ArrayList<String> DF(ArrayList<String> q,String OriginalQueryTerms)
+        {
+            Map<String,Long> unsorted = new LinkedHashMap<>();
+
+            for(String s:q)
+            {
+                long val=0;
+                try {
+                    val = getDF(s);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                unsorted.put(s,val);
+            }
+
+            Map<String,Long> sorted = sortMAP(unsorted,1);
+
+            String[] split= processOriginalTerms(OriginalQueryTerms);
+            ArrayList<String> topTerms = new ArrayList<>(Arrays.asList(split));
+            int c=0;
+            for(Map.Entry<String,Long> m:sorted.entrySet())
+            {
+                c++;
+                topTerms.add(m.getKey());
+                if(c==MAX_TERM) break;
+            }
+
+            return topTerms;
+        }
+
         String getTopKTerms(Map<String,Integer> docList,String QueryTerms)
         {
              StringBuilder build = conCatTopParas(docList,MAX_DOC);
@@ -427,6 +547,24 @@ public class ExpansionUtils
             ArrayList<String> processed = processDocument(build);
 
             ArrayList<String> res = getTopTermsPerQueryTerm(processed,QueryTerms);
+            return ArrayListInToString(res);
+        }
+
+        String getTopKTermsPerQueryHighIDF(Map<String,Integer> docList,String QueryTerms)
+        {
+            StringBuilder build = conCatTopParas(docList,MAX_DOC);
+            ArrayList<String> processed = processDocument(build);
+            ArrayList<String> topTerms = getTopTermsPerQueryTerm(processed,QueryTerms);
+            ArrayList<String> res = IDF(topTerms,QueryTerms);
+            return ArrayListInToString(res);
+        }
+
+        String getTopKTermsPerQueryHighDF(Map<String,Integer> docList,String QueryTerms)
+        {
+            StringBuilder build = conCatTopParas(docList,MAX_DOC);
+            ArrayList<String> processed = processDocument(build);
+            ArrayList<String> topTerms = getTopTermsPerQueryTerm(processed,QueryTerms);
+            ArrayList<String> res = DF(topTerms,QueryTerms);
             return ArrayListInToString(res);
         }
 

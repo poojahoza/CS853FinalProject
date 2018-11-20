@@ -45,10 +45,10 @@ public class BM25 extends Searcher
             return searcher;
         }
 
-        public Map<String,Map<String,Integer>> getRankings()
-        {
-            return ranks;
-        }
+//        public Map<String,Map<String,Integer>> getRankings()
+//        {
+//            return ranks;
+//        }
 
         public Map<String,Map<String,Integer>> getRankings(Map<String,String> out)
         {
@@ -86,8 +86,9 @@ public class BM25 extends Searcher
      * @param scoreDocs
      * @param queryId
      * @throws IOException
-     * @apiNote Returns the DocID associated with the paraID
+     * @apiNote This contains MAP of query ID, paraID and the DOC ID associated with Para.
      */
+
     private void updateRankings(ScoreDoc[] scoreDocs, String queryId) throws IOException
     {
                 for(ScoreDoc s:scoreDocs)
