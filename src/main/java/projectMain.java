@@ -34,7 +34,7 @@ public class projectMain
 
             constants.setBigramDirectory(System.getProperty("user.dir")+System.getProperty("file.separator")+"BigramIndexed_file");
 
-            constants.setWindoewsDirectory(System.getProperty("user.dir")+System.getProperty("file.separator")+"WindowIndexed_file");
+            constants.setUnbigramDirectory(System.getProperty("user.dir")+System.getProperty("file.separator")+"UnBigram_file");
 
             constants.setOutlineCbor(args[1]);
             constants.setQrelPath(args[2]);
@@ -46,8 +46,8 @@ public class projectMain
             IndexBuilder BigramIndex = new IndexBuilder();
             BigramIndex.getIndexWriter("BigramIndex");
 
-            /*IndexBuilder windowIndex = new IndexBuilder();
-            windowIndex.getIndexWriter("WindowIndex");*/
+            IndexBuilder windowIndex = new IndexBuilder();
+            windowIndex.getIndexWriter("UNBigramIndex");
 
             Map<String,String> p = Util.readOutline(constants.OUTLINE_CBOR);
 
@@ -61,7 +61,7 @@ public class projectMain
             uniLapalce.writeRankings(p);
 
             SDMSearcher uniJM = new SDMSearcher("UnigramJM");
-            uniJM.setUnigramDirichlet();
+            uniJM.setUnigramJM();
             uniJM.writeRankings(p);
 
             SDMSearcher uniDrichlet = new SDMSearcher("UnigramDrichlet");
@@ -88,8 +88,21 @@ public class projectMain
             BiBM25.setBigramBM25();
             BiBM25.writeRankings(p);
 
+            SDMSearcher UNBiLaplace = new SDMSearcher("UNBigramLaplace");
+            UNBiLaplace.setUNBigramLaplace();
+            UNBiLaplace.writeRankings(p);
 
+            SDMSearcher UNBijm = new SDMSearcher("UNBigramJM");
+            UNBijm.setUNBigramJM();
+            UNBijm.writeRankings(p);
 
+            SDMSearcher UNBiDrichlet = new SDMSearcher("UNBigramDrichlet");
+            UNBiDrichlet.setUNBigramDritchlet();
+            UNBiDrichlet.writeRankings(p);
+
+            SDMSearcher UNBiBM25 = new SDMSearcher("UNBigramBM25");
+            UNBiBM25.setUNBigramBM25();
+            UNBiBM25.writeRankings(p);
 
         }
 

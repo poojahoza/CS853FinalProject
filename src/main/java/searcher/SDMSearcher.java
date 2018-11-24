@@ -26,6 +26,10 @@ public class SDMSearcher extends Searcher {
             searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(constants.BIGRAM_DIRECTORY))));
             parser = new QueryParser("body", new ShingleAnalyzerWrapper(new EnglishAnalyzer(),2, 2));
         }
+
+        if(methodName.contains("UNBigram")){
+            searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(constants.UNBIGRAM_DIRECTORY))));
+        }
         this.methodName = methodName;
         output_file_name = "output_"+ methodName+"_ranking.txt";
     }
@@ -135,6 +139,57 @@ public class SDMSearcher extends Searcher {
             // Bigram BM25
             case 8:
                 break;
+            // UNBigram Laplace
+            case 9:
+                sb = new SimilarityBase(){
+                    @Override
+
+                    protected float score(BasicStats stats, float freq, float DocLen){
+                        float numerator = freq + 1;
+                        Long vocabSize = new Long(stats.getNumberOfFieldTokens());
+                        float denominator = DocLen + vocabSize.floatValue();
+                        return (float)Math.log(numerator / denominator);
+                    }
+                    @Override
+                    public String toString(){
+                        return null;
+                    }
+                };
+                this.searcher.setSimilarity(sb);
+                break;
+             // UNBigram JM
+            case 10:
+                sb = new SimilarityBase(){
+                    @Override
+                    protected float score(BasicStats stats, float freq, float DocLen){
+                        float prob_term_doc = ((constants.lambda*(freq/DocLen))+(1- constants.lambda)*(stats.getNumberOfFieldTokens()));
+                        return (float)Math.log(prob_term_doc);
+                    }
+                    @Override
+                    public String toString(){
+                        return null;
+                    }
+                };
+                this.searcher.setSimilarity(sb);
+                break;
+            // UNBigram Dirichlet
+            case 11:
+                sb = new SimilarityBase() {
+                    @Override
+                    protected float score(BasicStats bs, float freq, float docln) {
+                        float prob_term_doc = (float)Math.log((double)(docln/ (docln + constants.Mu)) + (constants.Mu / (docln +constants.Mu)) * (bs.getNumberOfFieldTokens()));
+                        return prob_term_doc;
+                    }
+                    @Override
+                    public String toString() {
+                        return null;
+                    }
+                };
+                this.searcher.setSimilarity(sb);
+                break;
+             // UNBigram BM25
+            case 12:
+                break;
         }
     }
 
@@ -186,6 +241,26 @@ public class SDMSearcher extends Searcher {
 
         System.out.println(this.methodName + " is being called");
         setSearchSimilarityBase(8);
+    }
+    public void setUNBigramLaplace(){
+
+        System.out.println(this.methodName + " is being called");
+        setSearchSimilarityBase(8);
+    }
+    public void setUNBigramJM(){
+
+        System.out.println(this.methodName + " is being called");
+        setSearchSimilarityBase(9);
+    }
+    public void setUNBigramDritchlet(){
+
+        System.out.println(this.methodName + " is being called");
+        setSearchSimilarityBase(10);
+    }
+    public void setUNBigramBM25(){
+
+        System.out.println(this.methodName + " is being called");
+        setSearchSimilarityBase(11);
     }
 
 }
