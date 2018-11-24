@@ -1,7 +1,9 @@
 
 package main.java.indexer;
 import main.java.util.constants;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.shingle.ShingleAnalyzerWrapper;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.Field;
@@ -45,25 +47,61 @@ public class IndexBuilder
 	    * @throws IOException
 	    */
 
-	    public void getIndexWriter() throws IOException {
-	    	
+	    public void getIndexWriter(String IndexType) throws IOException {
+
+			Directory indexDir;
+			IndexWriterConfig config;
 	    	//If we haven't created and indexwriter yet
 	        if (indexWriter == null)
 	        {
-	        	
-	        	//Get the path of the index
-	            Directory indexDir = FSDirectory.open(Paths.get(constants.DIRECTORY_NAME));
-	            
-	            //Create the configuration for the index
-	            IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
-	            config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
-	            
-	            //Create the IndexWriter
-	            indexWriter = new IndexWriter(indexDir, config);
-	            
-	            //Parse the paragraphs and return the indexwriter with the corpus indexed
-	             parseParagraph(indexWriter);
-	           
+	        	switch(IndexType){
+
+					case "BigramIndex" :
+						//Get the path of the index
+						indexDir = FSDirectory.open(Paths.get(constants.BIGRAM_DIRECTORY));
+
+						//Create the configuration for the index
+						config = new IndexWriterConfig(new ShingleAnalyzerWrapper(new EnglishAnalyzer(), 2, 2));
+						config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+
+						//Create the IndexWriter
+						indexWriter = new IndexWriter(indexDir, config);
+
+						//Parse the paragraphs and return the indexwriter with the corpus indexed
+						parseParagraph(indexWriter);
+
+						break;
+					case "WindowIndex" :
+						//Get the path of the index
+						indexDir = FSDirectory.open(Paths.get(constants.BIGRAM_DIRECTORY));
+
+						//Create the configuration for the index
+						config = new IndexWriterConfig(new ShingleAnalyzerWrapper(new EnglishAnalyzer(), 2, 2));
+						config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+
+						//Create the IndexWriter
+						indexWriter = new IndexWriter(indexDir, config);
+
+						//Parse the paragraphs and return the indexwriter with the corpus indexed
+						parseParagraph(indexWriter);
+						break;
+					default:
+						//Get the path of the index
+						indexDir = FSDirectory.open(Paths.get(constants.DIRECTORY_NAME));
+
+						//Create the configuration for the index
+						config = new IndexWriterConfig(new StandardAnalyzer());
+						config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+
+						//Create the IndexWriter
+						indexWriter = new IndexWriter(indexDir, config);
+
+						//Parse the paragraphs and return the indexwriter with the corpus indexed
+						parseParagraph(indexWriter);
+
+						break;
+				}
+
 	        }
 	   }
 	    

@@ -89,7 +89,7 @@ public class Util {
             try {
                 String line = br.readLine();
 
-                if (line == null) {
+               if (line == null) {
                     break;
                 }
 
