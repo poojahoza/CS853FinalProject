@@ -1,16 +1,17 @@
 package main.java.queryexpansion;
 
-
 import main.java.searcher.BM25;
-
 import java.io.IOException;
 import java.util.*;
+
 
 public class QueryExpansion
 {
         private ExpansionUtils EXP = null;
         private BM25 bm25 = null;
         private Map<String,String> OUTLINE = null;
+        private Evaluation EVAL=null;
+        private Map<String,Map<String,Integer>> qrel=null;
 
 
         private  QueryExpansion()
@@ -23,6 +24,8 @@ public class QueryExpansion
                 System.out.println(e.getMessage());
             }
             EXP = new ExpansionUtils();
+            qrel= EXP.getQREL();
+            EVAL = new Evaluation(qrel);
         }
 
         public QueryExpansion(Map<String,String> OUTLINE)
@@ -42,6 +45,9 @@ public class QueryExpansion
                 String expanded = EXP.getTopKTerms(InitSet.getValue(),OUTLINE.get(InitSet.getKey()));
                 ExpandedTerms.put(InitSet.getKey(),expanded);
             }
+            System.out.println("Query Expansion => MAP@queryExpansion = "+ EVAL.map(bm25.getRankings(ExpandedTerms)));
+            System.out.println("Query Expansion => RPREC@queryExpansion = "+ EVAL.rprec(bm25.getRankings(ExpandedTerms)));
+            System.out.println(" ");
             bm25.writeRankings(ExpandedTerms);
         }
 
@@ -55,16 +61,22 @@ public class QueryExpansion
 
         public void runBM25(String mName,int k)
         {
+            EXP.printMessage();
             System.out.println("Called runBM25");
             bm25.setmethodName(mName);
             EXP.setMaxTerm(k);
+            System.out.println("Query Expansion =>MAP@BM25 = "+ EVAL.map(bm25.getRankings(OUTLINE)));
+            System.out.println("Query Expansion =>RPREC@BM25 = "+ EVAL.rprec(bm25.getRankings(OUTLINE)));
+            System.out.println(" ");
             bm25.writeRankings(OUTLINE);
         }
 
-        private void prfIndividualRunner(int k)
+    /**
+     * Gets TOP k terms per query term
+     * @param k
+     */
+    private void prfIndividualRunner(int k)
         {
-
-
             Map<String, String> ExpandedTerms = new LinkedHashMap<>(OUTLINE.size());
 
             Map<String,Map<String,Integer>> prf = bm25.getRankings(OUTLINE);
@@ -74,6 +86,9 @@ public class QueryExpansion
                 String expanded= EXP.getTopKTermsPerQuery(InitSet.getValue(),OUTLINE.get(InitSet.getKey()));
                 ExpandedTerms.put(InitSet.getKey(),expanded);
             }
+            System.out.println("Query Expansion => MAP@PerQueryExpansion = "+ EVAL.map(bm25.getRankings(ExpandedTerms)));
+            System.out.println("Query Expansion => RPREC@PerQueryExpansion = "+ EVAL.rprec(bm25.getRankings(ExpandedTerms)));
+            System.out.println(" ");
             bm25.writeRankings(ExpandedTerms);
         }
 
@@ -85,7 +100,12 @@ public class QueryExpansion
             prfIndividualRunner(k);
         }
 
-        private void prfIndividualRunnerIDF(int k)
+    /**
+     * Used the TOP k IDF terms as Expanded terms and writes to file
+     * @param k
+     */
+
+    private void prfIndividualRunnerIDF(int k)
         {
             Map<String, String> ExpandedTerms = new LinkedHashMap<>(OUTLINE.size());
 
@@ -96,6 +116,10 @@ public class QueryExpansion
                 String expanded= EXP.getTopKTermsPerQueryHighIDF(InitSet.getValue(),OUTLINE.get(InitSet.getKey()));
                 ExpandedTerms.put(InitSet.getKey(),expanded);
             }
+
+            System.out.println("Query Expansion => MAP@IDF = "+ EVAL.map(bm25.getRankings(ExpandedTerms)));
+            System.out.println("Query Expansion => RPREC@IDF = "+ EVAL.rprec(bm25.getRankings(ExpandedTerms)));
+            System.out.println(" ");
             bm25.writeRankings(ExpandedTerms);
         }
 
@@ -107,29 +131,43 @@ public class QueryExpansion
             prfIndividualRunnerIDF(k);
         }
 
+    /**
+     * THis will execute necessary the Query Expansion using top k highest DF as the expanded terms and
+     * then writes to file.
+     * @param k
+     */
 
-        private void prfIndividualRunnerDF(int k)
+    private void prfIndividualRunnerDF(int k)
         {
             Map<String, String> ExpandedTerms = new LinkedHashMap<>(OUTLINE.size());
-
             Map<String,Map<String,Integer>> prf = bm25.getRankings(OUTLINE);
 
             int c=0;
+
             for(Map.Entry<String,Map<String,Integer>> InitSet: prf.entrySet())
             {
-
                 String expanded= EXP.getTopKTermsPerQueryHighDF(InitSet.getValue(),OUTLINE.get(InitSet.getKey()));
                 ExpandedTerms.put(InitSet.getKey(),expanded);
             }
+            System.out.println("Query Expansion => MAP@DF = "+ EVAL.map(bm25.getRankings(ExpandedTerms)));
+            System.out.println("Query Expansion => RPREC@DF = "+ EVAL.rprec(bm25.getRankings(ExpandedTerms)));
+            System.out.println(" ");
             bm25.writeRankings(ExpandedTerms);
+            EXP.printMessage();
         }
 
-        public void runPrfIndividualDF(String mName,int k)
+    /**
+     *
+     * @param mName
+     * @param k
+     * Runs the DF method
+     */
+
+    public void runPrfIndividualDF(String mName,int k)
         {
             System.out.println("Called runPRFIndividualDF");
             bm25.setmethodName(mName);
             EXP.setMaxTerm(k);
             prfIndividualRunnerDF(k);
         }
-
 }

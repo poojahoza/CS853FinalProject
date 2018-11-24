@@ -22,7 +22,7 @@ public class BM25 extends Searcher
         public BM25() throws IOException
         {
             super();
-            k=100;
+            k =100;
             this.ranks = new LinkedHashMap<String, Map<String, Integer>>();
         }
 
@@ -52,7 +52,14 @@ public class BM25 extends Searcher
 
         public Map<String,Map<String,Integer>> getRankings(Map<String,String> out)
         {
-            this.runRanking(out);
+            if(ranks == null)
+            {
+                this.runRanking(out);
+            }
+            else {
+                ranks.clear();
+                this.runRanking(out);
+            }
             return ranks;
         }
 

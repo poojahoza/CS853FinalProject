@@ -3,6 +3,7 @@ package main.java.queryexpansion;
 /*Import statements from the CS853 package*/
 
 import main.java.searcher.BM25;
+import main.java.util.Util;
 import main.java.util.constants;
 import org.apache.lucene.index.*;
 import org.apache.lucene.search.CollectionStatistics;
@@ -15,19 +16,32 @@ import java.io.*;
 
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.logging.Logger;
 
 
 public class ExpansionUtils
 {
         private IndexReader indexReader  = null;
         private BM25 EXP_BM25= null;
-        private Properties PROP= null;
+        //private Properties PROP= null;
         private Map<String, ArrayList<Double>> GLOVE = null;
+        private Map<String,Map<String,Integer>> QREL=null;
 
         /*some K values*/
         private int MAX_DOC = 5;
         private int MAX_TERM=10;
         private int MAX_IDF_TERM=5;
+
+        /* PATH to GLOVE FILES*/
+        private final String glovefile_50d="//home//team3//glove_word_embeddings//glove.6B.50d.txt";
+        private final String glovefile_100d="//home//team3//glove_word_embeddings//glove.6B.100d.txt";
+        private final String glovefile_200d="//home//team3//glove_word_embeddings//glove.6B.200d.txt";
+        private final  String glovefile_300d="//home//team3//glove_word_embeddings//glove.6B.300d.txt";
+
+//    private final String glovefile_50d="D:\\glove.6B\\glove.6B.50d.txt";
+//    private final String glovefile_100d="D:\\glove.6B\\glove.6B.100d.txt";
+//    private final String glovefile_200d="D:\\glove.6B\\glove.6B.200d.txt";
+//    private final  String glovefile_300d="D:\\glove.6B\\glove.6B.300d.txt";
 
         private  String[] array = {"a", "about", "above", "above", "across", "after", "afterwards", "again", "against", "all", "almost", "alone", "along", "already",
                   "also","although","always","am","among", "amongst", "amoungst", "amount",  "an", "and", "another", "any","anyhow","anyone","anything","anyway",
@@ -61,8 +75,15 @@ public class ExpansionUtils
             {
                 System.out.println(e.getMessage());
             }
-            PROP = this.returnProp();
+            //PROP = this.returnProp();
+            readQREL();
+        }
 
+        void printMessage()
+        {
+            System.out.println("//////////////////////////////////////////////////////////////////////////");
+            System.out.println("////////////////////////// Query Expansion ///////////////////////////////");
+            System.out.println("//////////////////////////////////////////////////////////////////////////");
         }
 
         void setMaxTerm(int max)
@@ -70,17 +91,40 @@ public class ExpansionUtils
             this.MAX_TERM = max;
         }
 
-        void setMaxDoc(int max)
+        void readQREL()
+        {
+            QREL = Util.readRunFile(constants.QREL_PATH);
+        }
+
+
+        Map<String,Map<String,Integer>> getQREL()
+        {
+            return QREL;
+        }
+
+    /**
+     * Change the MAX_DOC that needs to be processed in PRF
+     * @param max
+     */
+    void setMaxDoc(int max)
         {
             this.MAX_DOC = max;
         }
 
-        private void readVector()
+    /**
+     * Read into the HashMap
+     */
+    private void readVector()
         {
-            GLOVE = this.readWordVectors(PROP.getProperty("glovefile-50d"));
+            System.out.println("Loading Wording Vector......");
+            //GLOVE = this.readWordVectors(PROP.getProperty("glovefile-200d"));
+            GLOVE = this.readWordVectors(glovefile_200d);
         }
 
-        private void ensureLoadGlove()
+    /**
+     * Any method that needs Word Vectors calls this method to ensure Word embeddings are loaded in memory.
+     */
+    private void ensureLoadGlove()
         {
             if(GLOVE == null)
             {
@@ -88,7 +132,13 @@ public class ExpansionUtils
             }
         }
 
-        private Map<String, ArrayList<Double>> readWordVectors(String fname)
+    /**
+     *  Reads the Word Vector, given any filename dimension
+     * @param fname
+     * @return
+     */
+
+    private Map<String, ArrayList<Double>> readWordVectors(String fname)
         {
 
            BufferedReader br = null;
@@ -117,8 +167,12 @@ public class ExpansionUtils
            return vector;
        }
 
+    /**
+     * Helper method
+     * @param vec
+     */
 
-        private void DisplayVectors(Map<String,ArrayList<Double>> vec)
+    private void DisplayVectors(Map<String,ArrayList<Double>> vec)
         {
             for(Map.Entry<String,ArrayList<Double>> m:vec.entrySet())
             {
@@ -132,13 +186,26 @@ public class ExpansionUtils
             }
         }
 
-        public void DisplayRunResult(Map<String,String> vec)
+    /**
+     *
+     * @param vec
+     * Helper method
+     */
+
+    public void DisplayRunResult(Map<String,String> vec)
         {
             for(Map.Entry<String,String> m:vec.entrySet())
             {
                 System.out.println(m.getKey()+ "---->"+ m.getValue());
             }
         }
+
+    /**
+     *
+     * @param v1
+     * @param v2
+     * @return Dot product without normalization
+     */
 
         private double DotProduct(ArrayList<Double> v1,ArrayList<Double> v2)
         {
@@ -151,6 +218,13 @@ public class ExpansionUtils
             }
             return val;
         }
+
+    /**
+     *
+     * @param v1
+     * @param v2
+     * @return Computes the Cosine Similarity by taking two Vectors as input. This is normalized version.
+     */
 
        private double CosineSimilarity(ArrayList<Double> v1,ArrayList<Double> v2)
         {
@@ -166,11 +240,15 @@ public class ExpansionUtils
                 x_vector+= Math.pow(v1.get(i),2);
                 y_vector+= Math.pow(v2.get(i),2);
             }
-
             return val/(Math.sqrt(x_vector) * Math.sqrt(y_vector));
         }
 
-        private Properties returnProp()
+    /**
+     *
+     * @return Prop value for the config file
+     */
+
+    private Properties returnProp()
         {
             Properties prop = new Properties();
             InputStream input = null;
@@ -184,7 +262,11 @@ public class ExpansionUtils
             return prop;
         }
 
-         private IndexReader getIndexReader()
+    /**
+     *
+     * @return Returns the IndexReader object, this is needed to access all the information from the Index
+     */
+    private IndexReader getIndexReader()
          {
             IndexReader index =null;
             try
@@ -196,6 +278,16 @@ public class ExpansionUtils
             }
             return index;
         }
+
+    /**
+     *
+     * @param myTerm
+     * @param queryBoost
+     * @return BasicStats object which has all the information
+     * @throws IOException
+     * Ack- This code is taken from the stackover flow website and change according to my needs.
+     *      < https://stackoverflow.com/questions/31327126/accessing-terms-statistics-in-lucene-4> </>
+     */
 
         private BasicStats getBasicStats(Term myTerm, float queryBoost) throws IOException
         {
@@ -247,12 +339,23 @@ public class ExpansionUtils
             return myStats;
     }
 
+    /**
+     *
+     * @return Returns the StopList
+     */
+
     String[] getStopList()
     {
         return array;
     }
 
-    double getIDF(String s) throws  IOException
+    /**
+     *
+     * @param s
+     * @return Returns the IDF for a String. It constructs the Terms
+     * @throws IOException
+     */
+    private double getIDF(String s) throws  IOException
     {
         Term t= new Term("body",s);
         BasicStats b = getBasicStats(t,1);
@@ -267,7 +370,14 @@ public class ExpansionUtils
         return d;
     }
 
-    long getDF(String s) throws  IOException
+    /**
+     *
+     * @param s
+     * @return Returns the DF for a term passed
+     * @throws IOException
+     */
+
+    private long getDF(String s) throws  IOException
     {
         Term t= new Term("body",s);
         BasicStats b = getBasicStats(t,1);
@@ -282,6 +392,12 @@ public class ExpansionUtils
         return d;
     }
 
+    /**
+     *
+     * @param q
+     * @param OriginalQueryTerms
+     * @return Another method for TopK.
+     */
 
     private String getTopK(Map<String,Double> q,String OriginalQueryTerms)
     {
@@ -309,6 +425,11 @@ public class ExpansionUtils
         return build.toString();
     }
 
+    /**
+     *
+     * @param q
+     * @return return TOP element
+     */
     private ArrayList<String> getTopK(Map<String,Double> q)
     {
         Map<String, Double> sorted = new LinkedHashMap<>();
@@ -327,14 +448,32 @@ public class ExpansionUtils
         return res;
     }
 
+    /**
+     *
+     * @param query
+     * @return A Split to remove punctuations , lower case.
+     */
+
     private String[] processQuery(String query)
     {
         return query.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
     }
+
+    /**
+     *
+     * @param query
+     * @return A split to convert to lower case
+     */
     private String[] processOriginalTerms(String query)
     {
         return query.toLowerCase().split(" ");
     }
+
+    /**
+     *
+     * @param sb
+     * @return ArrayList, Removes the stop words and duplicates and return unique items, lower case of the document passed
+     */
 
     private ArrayList<String> processDocument(StringBuilder sb)
     {
@@ -351,6 +490,12 @@ public class ExpansionUtils
         return processedData;
     }
 
+    /**
+     *
+     * @param list
+     * @return returns a String from ArrayList
+     */
+
     private String ArrayListInToString(ArrayList<String> list)
     {
         StringBuilder sb= new StringBuilder();
@@ -361,6 +506,13 @@ public class ExpansionUtils
         }
         return sb.toString();
     }
+
+    /**
+     *
+     * @param processed
+     * @param OriginalQueryTerms
+     * @return Use the GLOVE word vectors to calculate the nearest words
+     */
 
     private ArrayList<String> getTopTermsPerQueryTerm(ArrayList<String> processed,String OriginalQueryTerms)
     {
@@ -402,6 +554,13 @@ public class ExpansionUtils
         return topTerms;
     }
 
+
+    /**
+     *
+     * @param q
+     * @return Sorted MAP. Helper method
+     */
+
     private Map<String,Double> sortMAP(Map<String,Double> q)
     {
 
@@ -414,6 +573,12 @@ public class ExpansionUtils
 
     }
 
+    /**
+     *
+     * @param q
+     * @param n
+     * @return Sorted MAP. Helper method
+     */
     private Map<String,Long> sortMAP(Map<String,Long> q, int n)
     {
         Map<String, Long> sorted = new LinkedHashMap<>();
@@ -424,6 +589,13 @@ public class ExpansionUtils
         return sorted;
 
     }
+
+    /**
+     *
+     * @param processed
+     * @param OriginalQueryTerms
+     * @return returns the Top Terms calculated
+     */
 
     private Map<String,Double> getTopTerms(ArrayList<String> processed,String OriginalQueryTerms)
     {
@@ -446,15 +618,15 @@ public class ExpansionUtils
             }
         }
 
-//        Map<String, Double> result2 = new LinkedHashMap<>();
-//        topTerms.entrySet().stream()
-//                .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
-//                .forEachOrdered(x -> result2.put(x.getKey(), x.getValue()));
-
-       // return result2;
         return sortMAP(topTerms);
     }
 
+    /**
+     *
+     * @param docList
+     * @param k
+     * @return This concatenates the Top k Paragraphs and returns the String builder object
+     */
 
     private StringBuilder conCatTopParas(Map<String,Integer> docList,int k)
     {
@@ -471,6 +643,14 @@ public class ExpansionUtils
         }
         return build;
     }
+
+    /**
+     *
+     * @param q
+     * @param OriginalQueryTerms
+     * @return A top K IDF terms. This takes the nearest words as input and reorders them according to
+     *         their highest IDF score.
+     */
 
         private ArrayList<String> IDF(ArrayList<String> q,String OriginalQueryTerms)
         {
@@ -500,6 +680,13 @@ public class ExpansionUtils
 
                  return topTerms;
         }
+
+    /**
+     *
+     * @param q
+     * @param OriginalQueryTerms
+     * @return Takes the top k nearest words and reorders them according to their document frequency
+     */
 
         private ArrayList<String> DF(ArrayList<String> q,String OriginalQueryTerms)
         {
@@ -532,7 +719,15 @@ public class ExpansionUtils
             return topTerms;
         }
 
-        String getTopKTerms(Map<String,Integer> docList,String QueryTerms)
+    /**
+     *
+     * @param docList
+     * @param QueryTerms
+     * @return Returns the Expanded Terms for the given query and returns the Expanded query as String.
+     *          This calculates the nearest words as whole (not per term basis and returns the top K )
+     */
+
+    String getTopKTerms(Map<String,Integer> docList,String QueryTerms)
         {
              StringBuilder build = conCatTopParas(docList,MAX_DOC);
              ArrayList<String> processed = processDocument(build);
@@ -541,7 +736,15 @@ public class ExpansionUtils
              return getTopK(res,QueryTerms.toLowerCase());
         }
 
-        String getTopKTermsPerQuery(Map<String,Integer> docList,String QueryTerms)
+    /**
+     *
+     * @param docList
+     * @param QueryTerms
+     * @return Returns the Expanded Terms for the given query and returns the Expanded query as String.
+     *      *   This calculates the nearest words for each individual query term
+     */
+
+    String getTopKTermsPerQuery(Map<String,Integer> docList,String QueryTerms)
         {
             StringBuilder build = conCatTopParas(docList,MAX_DOC);
             ArrayList<String> processed = processDocument(build);
@@ -550,7 +753,16 @@ public class ExpansionUtils
             return ArrayListInToString(res);
         }
 
-        String getTopKTermsPerQueryHighIDF(Map<String,Integer> docList,String QueryTerms)
+    /**
+     *
+     * @param docList
+     * @param QueryTerms
+     * @return Returns the Expanded Terms for the given query and returns the Expanded query as String.
+     *      *          This calculates the nearest words per query terms, reorders them on highest to lowest IDF and
+     *                  returns the top K.
+     */
+
+    String getTopKTermsPerQueryHighIDF(Map<String,Integer> docList,String QueryTerms)
         {
             StringBuilder build = conCatTopParas(docList,MAX_DOC);
             ArrayList<String> processed = processDocument(build);
@@ -559,7 +771,16 @@ public class ExpansionUtils
             return ArrayListInToString(res);
         }
 
-        String getTopKTermsPerQueryHighDF(Map<String,Integer> docList,String QueryTerms)
+    /**
+     *
+     * @param docList
+     * @param QueryTerms
+     * @return Returns the Expanded Terms for the given query and returns the Expanded query as String.
+     *        This calculates the nearest words per query terms, reorders them on highest to lowest DF and
+     *        returns the top K.
+     */
+
+     String getTopKTermsPerQueryHighDF(Map<String,Integer> docList,String QueryTerms)
         {
             StringBuilder build = conCatTopParas(docList,MAX_DOC);
             ArrayList<String> processed = processDocument(build);

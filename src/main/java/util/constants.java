@@ -10,6 +10,7 @@ public class constants
     public static String DIRECTORY_NAME="";
     public static Map<String, Map<String,Integer>> queryDocPair = new LinkedHashMap<String, Map<String, Integer>>();
     public final static String Prop = "C:\\Users\\amith\\IdeaProjects\\CS853FinalProject\\src\\main\\java\\config.properties";
+    //public final static String Prop = "//home//ar1184//CS853FinalProject//src//main//java//config.properties";
 
     public static String OUTLINE_CBOR="";
     public static String QREL_PATH="";
@@ -25,7 +26,7 @@ public class constants
     }
     public static void setOutlineCbor(String d)
     {
-        OUTLINE_CBOR= d;
+        OUTLINE_CBOR = d;
     }
     public static void setQrelPath(String d){ QREL_PATH= d;}
 
