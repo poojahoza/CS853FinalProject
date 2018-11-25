@@ -80,10 +80,6 @@ public class projectMain
             BiDrichlet.setBigramDirichlet();
             BiDrichlet.writeRankings(p);
 
-            SDMSearcher uniBM25 = new SDMSearcher("UnigraBM25");
-            uniBM25.setUnigramBM25();
-            uniBM25.writeRankings(p);
-
             SDMSearcher BiBM25 = new SDMSearcher("BigramBM25");
             BiBM25.setBigramBM25();
             BiBM25.writeRankings(p);

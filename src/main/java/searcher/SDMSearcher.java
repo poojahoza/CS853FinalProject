@@ -133,14 +133,11 @@ public class SDMSearcher extends Searcher {
                 };
                 this.searcher.setSimilarity(sb);
                 break;
-            // Unigram BM25
-            case 7 :
-               break;
             // Bigram BM25
-            case 8:
+            case 7:
                 break;
             // UNBigram Laplace
-            case 9:
+            case 8:
                 sb = new SimilarityBase(){
                     @Override
 
@@ -158,7 +155,7 @@ public class SDMSearcher extends Searcher {
                 this.searcher.setSimilarity(sb);
                 break;
              // UNBigram JM
-            case 10:
+            case 9:
                 sb = new SimilarityBase(){
                     @Override
                     protected float score(BasicStats stats, float freq, float DocLen){
@@ -173,7 +170,7 @@ public class SDMSearcher extends Searcher {
                 this.searcher.setSimilarity(sb);
                 break;
             // UNBigram Dirichlet
-            case 11:
+            case 10:
                 sb = new SimilarityBase() {
                     @Override
                     protected float score(BasicStats bs, float freq, float docln) {
@@ -188,7 +185,7 @@ public class SDMSearcher extends Searcher {
                 this.searcher.setSimilarity(sb);
                 break;
              // UNBigram BM25
-            case 12:
+            case 11:
                 break;
         }
     }
@@ -232,15 +229,10 @@ public class SDMSearcher extends Searcher {
         System.out.println(this.methodName + " is being called");
         setSearchSimilarityBase(6);
     }
-    public void setUnigramBM25(){
-
-        System.out.println(this.methodName + " is being called");
-        setSearchSimilarityBase(7);
-    }
     public void setBigramBM25(){
 
         System.out.println(this.methodName + " is being called");
-        setSearchSimilarityBase(8);
+        setSearchSimilarityBase(7);
     }
     public void setUNBigramLaplace(){
 
