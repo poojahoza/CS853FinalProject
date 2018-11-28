@@ -67,7 +67,7 @@ public class projectMain
             SDMSearcher SDM_Drichlet = new SDMSearcher("SDM_with_Drichlet_smoothing");
             SDM_Drichlet.setDrichletSDM();
 
-            SDMSearcher SDM_BM25 = new SDMSearcher("SDM_with_BM25_smoothing");
+            SDMSearcher SDM_BM25 = new SDMSearcher("SDM_with_BM25");
             SDM_BM25.setBM25SDM();
 
 

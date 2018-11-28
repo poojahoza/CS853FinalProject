@@ -60,6 +60,7 @@ public class base extends Searcher {
             // Bigram Dirichlet
             case 6:
                 callDrichlet();
+                break;
             // Bigram BM25
             case 7:
                 break;
@@ -78,13 +79,15 @@ public class base extends Searcher {
              // Window BM25
             case 11:
                 break;
+            default:
+                break;
         }
     }
 
     //Set Laplace smoothing as the smoothing method
     public void setUnigramLaplace(){
 
-        System.out.println(this.methodName + " is being called");
+        //System.out.println(this.methodName + " is being called");
         setSearchSimilarityBase(1);
 
     }
@@ -107,7 +110,7 @@ public class base extends Searcher {
 
     public void setBigramLaplace(){
 
-        System.out.println(this.methodName + " is being called");
+        //System.out.println(this.methodName + " is being called");
         setSearchSimilarityBase(4);
     }
     public void setBigramJM(){
@@ -127,7 +130,7 @@ public class base extends Searcher {
     }
     public void setWindowLaplace(){
 
-        System.out.println(this.methodName + " is being called");
+        //System.out.println(this.methodName + " is being called");
         setSearchSimilarityBase(8);
     }
     public void setWindowJM(){
