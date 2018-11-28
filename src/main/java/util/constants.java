@@ -9,8 +9,9 @@ public class constants
     public static String FILE_NAME="";
     public static String DIRECTORY_NAME = "";
     public static String BIGRAM_DIRECTORY = "";
-    public static String UNBIGRAM_DIRECTORY = "";
+    public static String WINDOW_DIRECTORY = "";
     public static Map<String, Map<String,Integer>> queryDocPair = new LinkedHashMap<String, Map<String, Integer>>();
+    public static final int windowSize = 6;
 
     public static String OUTLINE_CBOR="";
     public static String QREL_PATH="";
@@ -24,7 +25,7 @@ public class constants
     }
     public static void setDirectoryName(String d) { DIRECTORY_NAME= d; }
     public static void setBigramDirectory(String d) {BIGRAM_DIRECTORY = d; }
-    public static void setUnbigramDirectory(String d) {UNBIGRAM_DIRECTORY = d;}
+    public static void setWindowDirectory(String d) {WINDOW_DIRECTORY = d;}
     public static void setOutlineCbor(String d)
     {
         OUTLINE_CBOR= d;

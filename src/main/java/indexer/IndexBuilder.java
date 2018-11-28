@@ -54,70 +54,36 @@ public class IndexBuilder
 	    * @throws IOException
 	    */
 
-	    public void getIndexWriter(String IndexType) throws IOException {
+	    public void getIndexWriter() throws IOException {
 
 			Directory indexDir;
 			IndexWriterConfig config;
-	    	//If we haven't created and indexwriter yet
-	        if (indexWriter == null)
-	        {
-	        	switch(IndexType){
 
-					case "BigramIndex" :
-						//Get the path of the index
-						indexDir = FSDirectory.open(Paths.get(constants.BIGRAM_DIRECTORY));
 
-						//Create the configuration for the index
-						config = new IndexWriterConfig(new ShingleAnalyzerWrapper(new EnglishAnalyzer(), 2, 2));
-						config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+			//If we haven't created and indexwriter yet
+			if (indexWriter == null)
+			{
+				//Get the path of the index
+				indexDir = FSDirectory.open(Paths.get(constants.DIRECTORY_NAME));
 
-						//Create the IndexWriter
-						indexWriter = new IndexWriter(indexDir, config);
+				//Create the configuration for the index
+				config = new IndexWriterConfig(new StandardAnalyzer());
+				config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
 
-						//Parse the paragraphs and return the indexwriter with the corpus indexed
-						parseParagraph(indexWriter);
+				//Create the IndexWriter
+				indexWriter = new IndexWriter(indexDir, config);
 
-						break;
-					case "UNBigramIndex" :
-						//Get the path of the index
-						indexDir = FSDirectory.open(Paths.get(constants.UNBIGRAM_DIRECTORY));
+				//Parse the paragraphs and return the indexwriter with the corpus indexed
+				parseParagraph(indexWriter);
+			}
 
-						//Create the configuration for the index
-						config = new IndexWriterConfig(new StandardAnalyzer());
-						config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
-
-						//Create the IndexWriter
-						indexWriter = new IndexWriter(indexDir, config);
-
-						//Parse the paragraphs and return the indexwriter with the corpus indexed
-						parseParagraph2(indexWriter);
-						break;
-					default:
-						//Get the path of the index
-						indexDir = FSDirectory.open(Paths.get(constants.DIRECTORY_NAME));
-
-						//Create the configuration for the index
-						config = new IndexWriterConfig(new StandardAnalyzer());
-						config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
-
-						//Create the IndexWriter
-						indexWriter = new IndexWriter(indexDir, config);
-
-						//Parse the paragraphs and return the indexwriter with the corpus indexed
-						parseParagraph(indexWriter);
-
-						break;
-				}
-
-	        }
-	   }
-	    
+		}
 	 /**
 	  * Actually parses the paragraph from the mode parameters
 	  * @param indexWriter generated indexwriter to add doc to
 	  * @return indexwriter with docs added
 	  */
-	 private void parseParagraph(IndexWriter indexWriter)
+	 protected  void parseParagraph (IndexWriter indexWriter)
 	 {
 		 
 				// this function shoudl take care of the Reading the CBOR file and indexing it
@@ -174,7 +140,7 @@ public class IndexBuilder
 	  * Closes the indexwriter so that we can use it in searching
 	  * @throws IOException
 	  */
-	 private void closeIndexWriter()
+	 protected void closeIndexWriter()
 	 {
 	        if (indexWriter != null)
 	        {
@@ -189,85 +155,6 @@ public class IndexBuilder
 
 	        }
 	   }
-
-	private void parseParagraph2(IndexWriter indexWriter) throws IOException
-	{
-
-		// this function shoudl take care of the Reading the CBOR file and indexing it
-		FileInputStream fileInputStream2 = null;
-		try {
-			fileInputStream2 = new FileInputStream(new File(constants.FILE_NAME));
-		}catch(FileNotFoundException fnf) {
-			System.out.println(fnf.getMessage());
-
-		}
-
-		int increment=0;
-		//For each of the paragraphs from the deserialized inputstream
-		for(Data.Paragraph p: DeserializeData.iterableParagraphs(fileInputStream2))
-		{
-
-			//We create a document
-			System.out.println("Indexing "+ p.getParaId());
-			Document doc = new Document();
-
-			FieldType contentType = new FieldType();
-			contentType.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS);
-			contentType.setStored(true);
-			contentType.setTokenized(true);
-			contentType.setStoreTermVectors(true);
-
-
-			Analyzer analyzer = new Analyzer() {
-				@Override
-				protected TokenStreamComponents createComponents(String s) {
-                    StandardTokenizer src = new StandardTokenizer();
-                    TokenStream result = new StandardFilter(src);
-                    result = new LowerCaseFilter(result);
-                    result = new StopFilter(result,  StandardAnalyzer.STOP_WORDS_SET);
-                    result = new PorterStemFilter(result);
-                    result = new CapitalizationFilter(result);
-                    return new TokenStreamComponents(src, result);
-				}
-			};
-
-			TokenStream ts = analyzer.tokenStream("content",  p.getTextOnly());
-			OffsetAttribute offsetattribute = ts.addAttribute(OffsetAttribute.class);
-			CharTermAttribute charTermAttribute = ts.addAttribute(CharTermAttribute.class);
-
-			ArrayList<String> terms = new ArrayList<>();
-			ts.reset();
-            while(ts.incrementToken()){
-            	int startOffset = offsetattribute.startOffset();
-            	int endOffset = offsetattribute.endOffset();
-            	terms.add(charTermAttribute.toString());
-			}
-
-			//Then we add the paragraph id and the paragraph body for searching
-			for(int i = 0; i < terms.size() - 1; i++) {
-				String UNbiterm = terms.get(i + 1) + " " + terms.get(i);
-				doc.add(new StringField("id", p.getParaId(), Field.Store.YES));
-				doc.add(new Field("body",UNbiterm , contentType));
-			}
-			//From here we add the document to the indexwriter
-
-			try {
-				indexWriter.addDocument(doc);
-				increment++;
-
-				//commit the Data after 50 paragraph
-
-				if(increment % 50 ==0)
-				{
-					indexWriter.commit();
-				}
-			}catch(IOException ioe) {
-				System.out.println(ioe.getMessage());
-			}
-		}
-		closeIndexWriter();
-
-	}
 
 
 }

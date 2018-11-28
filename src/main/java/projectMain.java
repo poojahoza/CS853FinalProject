@@ -1,8 +1,10 @@
 package main.java;
 import java.io.IOException;
 
+import main.java.indexer.BigramIndexBuilder;
 import main.java.indexer.IndexBuilder;
 import main.java.searcher.SDMSearcher;
+import main.java.searcher.base;
 import main.java.searcher.Searcher;
 import main.java.util.constants;
 import main.java.util.Util;
@@ -34,20 +36,20 @@ public class projectMain
 
             constants.setBigramDirectory(System.getProperty("user.dir")+System.getProperty("file.separator")+"BigramIndexed_file");
 
-            constants.setUnbigramDirectory(System.getProperty("user.dir")+System.getProperty("file.separator")+"UnBigram_file");
+            constants.setWindowDirectory(System.getProperty("user.dir")+System.getProperty("file.separator")+"UnBigram_file");
 
             constants.setOutlineCbor(args[1]);
             constants.setQrelPath(args[2]);
 
             //Create the new lucene Index
             IndexBuilder defaultIndex = new IndexBuilder();
-            defaultIndex.getIndexWriter("defaultIndex");
+            defaultIndex.getIndexWriter();
 
-            IndexBuilder BigramIndex = new IndexBuilder();
+            BigramIndexBuilder BigramIndex = new BigramIndexBuilder();
             BigramIndex.getIndexWriter("BigramIndex");
 
-            IndexBuilder windowIndex = new IndexBuilder();
-            windowIndex.getIndexWriter("UNBigramIndex");
+            BigramIndexBuilder windowIndex = new BigramIndexBuilder();
+            windowIndex.getIndexWriter("WindowIndex");
 
             Map<String,String> p = Util.readOutline(constants.OUTLINE_CBOR);
 
@@ -56,49 +58,32 @@ public class projectMain
 
             System.out.println("-----------------------------------------------------------------------------");
 
-            SDMSearcher uniLapalce = new SDMSearcher("UnigramLaplace");
-            uniLapalce.setUnigramLaplace();
-            uniLapalce.writeRankings(p);
+            SDMSearcher SDM_Laplace = new SDMSearcher("SDM_with_Laplace_smoothing");
+            SDM_Laplace.setJMSDM();
 
-            SDMSearcher uniJM = new SDMSearcher("UnigramJM");
-            uniJM.setUnigramJM();
-            uniJM.writeRankings(p);
+            SDMSearcher SDM_JM = new SDMSearcher("SDM_with_JM_smoothing");
+            SDM_JM.setJMSDM();
 
-            SDMSearcher uniDrichlet = new SDMSearcher("UnigramDrichlet");
-            uniDrichlet.setUnigramDirichlet();
-            uniDrichlet.writeRankings(p);
+            SDMSearcher SDM_Drichlet = new SDMSearcher("SDM_with_Drichlet_smoothing");
+            SDM_Drichlet.setDrichletSDM();
 
-            SDMSearcher BiLaplace = new SDMSearcher("BigramLaplace");
-            BiLaplace.setBigramLaplace();
-            BiLaplace.writeRankings(p);
+            SDMSearcher SDM_BM25 = new SDMSearcher("SDM_with_BM25_smoothing");
+            SDM_BM25.setBM25SDM();
 
-            SDMSearcher BijM = new SDMSearcher("BigramJM");
-            BijM.setBigramJM();
-            BijM.writeRankings(p);
 
-            SDMSearcher BiDrichlet = new SDMSearcher("BigramDrichlet");
-            BiDrichlet.setBigramDirichlet();
-            BiDrichlet.writeRankings(p);
 
-            SDMSearcher BiBM25 = new SDMSearcher("BigramBM25");
-            BiBM25.setBigramBM25();
-            BiBM25.writeRankings(p);
 
-            SDMSearcher UNBiLaplace = new SDMSearcher("UNBigramLaplace");
-            UNBiLaplace.setUNBigramLaplace();
-            UNBiLaplace.writeRankings(p);
 
-            SDMSearcher UNBijm = new SDMSearcher("UNBigramJM");
-            UNBijm.setUNBigramJM();
-            UNBijm.writeRankings(p);
 
-            SDMSearcher UNBiDrichlet = new SDMSearcher("UNBigramDrichlet");
-            UNBiDrichlet.setUNBigramDritchlet();
-            UNBiDrichlet.writeRankings(p);
 
-            SDMSearcher UNBiBM25 = new SDMSearcher("UNBigramBM25");
-            UNBiBM25.setUNBigramBM25();
-            UNBiBM25.writeRankings(p);
+
+
+
+
+
+
+
+
 
         }
 
