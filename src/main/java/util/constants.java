@@ -8,6 +8,8 @@ public class constants
 {
     public static String FILE_NAME="";
     public static String DIRECTORY_NAME="";
+    public static String ENTITY_DIRECTORY_NAME = "";
+    public static String DIRECTORY_NAME_WITH_ENTITY_FIELD = "";
     public static Map<String, Map<String,Integer>> queryDocPair = new LinkedHashMap<String, Map<String, Integer>>();
 
     public static String OUTLINE_CBOR="";
@@ -27,4 +29,6 @@ public class constants
         OUTLINE_CBOR= d;
     }
     public static void setQrelPath(String d){ QREL_PATH= d;}
+    public static void setEntityDirectoryName(String e){ ENTITY_DIRECTORY_NAME = e;}
+    public static void setDirectoryNameWithEntityField(String de){ DIRECTORY_NAME_WITH_ENTITY_FIELD = de;}
 }
