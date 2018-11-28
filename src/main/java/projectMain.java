@@ -59,7 +59,7 @@ public class projectMain
             System.out.println("-----------------------------------------------------------------------------");
 
             SDMSearcher SDM_Laplace = new SDMSearcher("SDM_with_Laplace_smoothing");
-            SDM_Laplace.setJMSDM();
+            SDM_Laplace.setLaplaceSDM();
 
             SDMSearcher SDM_JM = new SDMSearcher("SDM_with_JM_smoothing");
             SDM_JM.setJMSDM();

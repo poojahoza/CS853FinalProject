@@ -181,17 +181,17 @@ public class base extends Searcher {
     }
     private void callDrichlet(){
         SimilarityBase sb;
-        sb = new SimilarityBase(){
+        sb = new SimilarityBase() {
             @Override
-            protected float score(BasicStats stats, float freq, float DocLen){
-                float prob_term_doc = ((constants.lambda*(freq/DocLen))+(1- constants.lambda)*(stats.getNumberOfFieldTokens()));
-                return (float)Math.log(prob_term_doc);
+            protected float score(BasicStats bs, float freq, float docln) {
+                float prob_term_doc = (float)Math.log((double)(docln/ (docln + constants.Mu)) + (constants.Mu / (docln + constants.Mu)) * (bs.getNumberOfFieldTokens()));
+                return prob_term_doc;
             }
             @Override
-            public String toString(){
-                return null;
+            public String toString() {
+                return "Dirichlet Smoothing";
             }
         };
-        this.searcher.setSimilarity(sb);
+        super.searcher.setSimilarity(sb);
     }
 }
