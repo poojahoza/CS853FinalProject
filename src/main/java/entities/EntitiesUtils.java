@@ -15,15 +15,6 @@ import java.util.*;
 
 public class EntitiesUtils{
 
-    /*class SortedMap implements Comparator<Map.Entry<String, Integer>> {
-
-        @Override
-        public int compare(Entry<String, Integer> o1, Entry<String, Integer> o2) {
-            // TODO Auto-generated method stub
-            return -o1.getValue().compareTo(o2.getValue());
-        }
-    }*/
-
     private Map<String, Integer> SortedMap(Map<String, Integer> entities)
     {
 
@@ -72,13 +63,6 @@ public class EntitiesUtils{
             }
         }
 
-        /*List<Map.Entry<String, Integer>> entity_entry = new ArrayList<Map.Entry<String, Integer>>(map.entrySet());
-        Collections.sort(entity_entry, new SortedMap());
-
-        Map<String, Map<String, Integer>> sortedEntitiesMap = new LinkedHashMap<String, <String, Integer>>();
-        for(Map.Entry<String, Integer> et: entity_entry){
-            sortedEntitiesMap.put(et.getKey(), et.getValue());
-        }*/
         Map<String, Map<String, Integer>> sortedEntitiesMap = new LinkedHashMap<String, Map<String, Integer>>();
 
         for(Map.Entry<String,Map<String, Integer>> queryMap: ranking_entities.entrySet()){
