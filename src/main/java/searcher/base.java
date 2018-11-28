@@ -28,6 +28,7 @@ public class base extends Searcher {
 
         if(methodName.contains("Window")){
             searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(constants.WINDOW_DIRECTORY))));
+            parser = new QueryParser("body", new ShingleAnalyzerWrapper(new EnglishAnalyzer(),2, 2));
         }
         this.methodName = methodName;
         output_file_name = "output_"+ methodName+"_ranking.txt";
