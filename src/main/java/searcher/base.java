@@ -192,7 +192,7 @@ public class base extends Searcher {
             }
             @Override
             public String toString() {
-                return "Dirichlet Smoothing";
+                return null;
             }
         };
         super.searcher.setSimilarity(sb);
