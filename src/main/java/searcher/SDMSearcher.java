@@ -132,6 +132,7 @@ public class SDMSearcher extends Searcher{
                 reRank();
                 writeRanking();
 
+                break;
 
              // Drichlet smoothing reveres Rank
             case 7:
@@ -148,6 +149,7 @@ public class SDMSearcher extends Searcher{
                 reRank();
                 writeRanking();
 
+                break;
 
             // BM25 reverse Rank
             case 8:
@@ -193,6 +195,7 @@ public class SDMSearcher extends Searcher{
             }
             reverseRankMap.put(queryId, temp);
         }
+
         return reverseRankMap;
     }
 
@@ -204,6 +207,7 @@ public class SDMSearcher extends Searcher{
             for(Map.Entry<String, Float> m : temp.entrySet())
                 createRankingpair(queryId, m.getKey(), m.getValue());
         }
+        System.out.println(query_doc_pair.entrySet().size());
     }
     private void createRankingpair(String queryId, String docId, Float score){
 
@@ -211,6 +215,7 @@ public class SDMSearcher extends Searcher{
         if(query_doc_pair.containsKey(this.methodName)) {
             Map<String, Map<String, Float>> outer = query_doc_pair.get(this.methodName);
             if (outer.containsKey(queryId)){
+
                 Map<String, Float> inner = outer.get(queryId);
                 if (inner.containsKey(docId)) {
                     Float docScore = inner.get(docId) + score;
@@ -236,6 +241,7 @@ public class SDMSearcher extends Searcher{
             outer.put(queryId,inner);
             query_doc_pair.put(this.methodName,outer);
         }
+
     }
     private void reRank(){
         Map<String, Map<String, Float>> temp = new LinkedHashMap<>();
