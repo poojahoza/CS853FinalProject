@@ -129,27 +129,35 @@ public class projectMain
 
             SDMSearcher SDM_Laplace = new SDMSearcher("SDM_with_Laplace_smoothing");
             SDM_Laplace.setLaplaceSDM();
+            constants.sdmQueryDocPiar.put(SDM_Laplace.getMethodName(), SDM_Laplace.get_query_doc_pair());
 
             SDMSearcher SDM_JM = new SDMSearcher("SDM_with_JM_smoothing");
             SDM_JM.setJMSDM();
+            constants.sdmQueryDocPiar.put(SDM_JM.getMethodName(), SDM_JM.get_query_doc_pair());
 
             SDMSearcher SDM_Drichlet = new SDMSearcher("SDM_with_Drichlet_smoothing");
             SDM_Drichlet.setDrichletSDM();
+            constants.sdmQueryDocPiar.put(SDM_Drichlet.getMethodName(), SDM_Drichlet.get_query_doc_pair());
 
             SDMSearcher SDM_BM25 = new SDMSearcher("SDM_with_BM25");
             SDM_BM25.setBM25SDM();
+            constants.sdmQueryDocPiar.put(SDM_BM25.getMethodName(), SDM_BM25.get_query_doc_pair());
 
             SDMSearcher SDM_LaplaceRR = new SDMSearcher("SDM_with_Laplace_smoothing_reverse_rank");
             SDM_LaplaceRR.setLaplaceSDMRR();
+            constants.sdmQueryDocPiar.put(SDM_LaplaceRR.getMethodName(), SDM_LaplaceRR.get_query_doc_pair());
 
             SDMSearcher SDM_JMRR = new SDMSearcher("SDM_with_JM_smoothing_reverse_rank");
             SDM_JMRR.setJMSDMRR();
+            constants.sdmQueryDocPiar.put(SDM_JMRR.getMethodName(), SDM_JMRR.get_query_doc_pair());
 
             SDMSearcher SDM_DrichletRR = new SDMSearcher("SDM_with_Drichlet_smoothing_reverse_rank");
             SDM_DrichletRR.setDrichletSDMRR();
+            constants.sdmQueryDocPiar.put(SDM_DrichletRR.getMethodName(), SDM_DrichletRR.get_query_doc_pair());
 
             SDMSearcher SDM_BM25RR = new SDMSearcher("SDM_with_BM25_reverse_rank");
             SDM_BM25RR.setBM25SDMRR();
+            constants.sdmQueryDocPiar.put(SDM_BM25RR.getMethodName(), SDM_BM25RR.get_query_doc_pair());
 
 
 

@@ -338,5 +338,10 @@ public class SDMSearcher extends Searcher{
         System.out.println(this.methodName + " is being called");
         this.writeRankings(8);
     }
-
+    public Map<String, Map<String, Float>>  get_query_doc_pair(){
+        return query_ordered_doc_pair.get(this.methodName);
+    }
+    public String getMethodName(){
+        return this.methodName;
+    }
     }
