@@ -11,20 +11,24 @@ public class constants
     public static String ENTITY_DIRECTORY_NAME = "";
     public static String ENTITY_BIGRAM_DIRECTORY_NAME = "";
     public static String DIRECTORY_NAME_WITH_ENTITY_FIELD = "";
+    public static String BIGRAM_DIRECTORY = "";
+    public static String WINDOW_DIRECTORY = "";
     public static Map<String, Map<String,Integer>> queryDocPair = new LinkedHashMap<String, Map<String, Integer>>();
+    public static final int windowSize = 6;
 
     public static String OUTLINE_CBOR="";
     public static String QREL_PATH="";
+    public static float lambda = 0.9f;
+    public static float Mu = 1000;
 
     public static Map<String, Map<String,Integer>> queryDocPairRead;
     public static void setIndexFileName(String s)
     {
         FILE_NAME = s;
     }
-    public static void setDirectoryName(String d)
-    {
-        DIRECTORY_NAME= d;
-    }
+    public static void setDirectoryName(String d) { DIRECTORY_NAME= d; }
+    public static void setBigramDirectory(String d) {BIGRAM_DIRECTORY = d; }
+    public static void setWindowDirectory(String d) {WINDOW_DIRECTORY = d;}
     public static void setOutlineCbor(String d)
     {
         OUTLINE_CBOR= d;

@@ -1,7 +1,17 @@
 
 package main.java.indexer;
+import jdk.nashorn.internal.parser.Token;
 import main.java.util.constants;
+import org.apache.lucene.analysis.*;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
+import org.apache.lucene.analysis.en.PorterStemFilter;
+import org.apache.lucene.analysis.miscellaneous.CapitalizationFilter;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.shingle.ShingleAnalyzerWrapper;
+import org.apache.lucene.analysis.standard.StandardFilter;
+import org.apache.lucene.analysis.standard.StandardTokenizer;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.Field;
@@ -18,11 +28,10 @@ import org.apache.lucene.store.FSDirectory;
 import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 import edu.unh.cs.treccar_v2.Data;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Paths;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Creates the index for the given corpus
@@ -46,33 +55,35 @@ public class IndexBuilder
 	    */
 
 	    public void getIndexWriter() throws IOException {
-	    	
-	    	//If we haven't created and indexwriter yet
-	        if (indexWriter == null)
-	        {
-	        	
-	        	//Get the path of the index
-	            Directory indexDir = FSDirectory.open(Paths.get(constants.DIRECTORY_NAME));
-	            
-	            //Create the configuration for the index
-	            IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
-	            config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
-	            
-	            //Create the IndexWriter
-	            indexWriter = new IndexWriter(indexDir, config);
-	            
-	            //Parse the paragraphs and return the indexwriter with the corpus indexed
-	             parseParagraph(indexWriter);
-	           
-	        }
-	   }
-	    
+
+			Directory indexDir;
+			IndexWriterConfig config;
+
+
+			//If we haven't created and indexwriter yet
+			if (indexWriter == null)
+			{
+				//Get the path of the index
+				indexDir = FSDirectory.open(Paths.get(constants.DIRECTORY_NAME));
+
+				//Create the configuration for the index
+				config = new IndexWriterConfig(new StandardAnalyzer());
+				config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+
+				//Create the IndexWriter
+				indexWriter = new IndexWriter(indexDir, config);
+
+				//Parse the paragraphs and return the indexwriter with the corpus indexed
+				parseParagraph(indexWriter);
+			}
+
+		}
 	 /**
 	  * Actually parses the paragraph from the mode parameters
 	  * @param indexWriter generated indexwriter to add doc to
 	  * @return indexwriter with docs added
 	  */
-	 private void parseParagraph(IndexWriter indexWriter)
+	 protected  void parseParagraph (IndexWriter indexWriter)
 	 {
 		 
 				// this function shoudl take care of the Reading the CBOR file and indexing it
@@ -129,7 +140,7 @@ public class IndexBuilder
 	  * Closes the indexwriter so that we can use it in searching
 	  * @throws IOException
 	  */
-	 private void closeIndexWriter()
+	 protected void closeIndexWriter()
 	 {
 	        if (indexWriter != null)
 	        {
@@ -144,5 +155,6 @@ public class IndexBuilder
 
 	        }
 	   }
+
 
 }

@@ -89,7 +89,7 @@ public class Util {
             try {
                 String line = br.readLine();
 
-                if (line == null) {
+               if (line == null) {
                     break;
                 }
 
@@ -185,7 +185,57 @@ public class Util {
         return mp;
 
     }
+    static public Map<String, Map<String, Float>> readRunFile2(String filename)
+    {
+        Map<String, Map<String, Float>> mp = new LinkedHashMap<>();
 
+        File fp = new File(filename);
+        FileReader fr;
+        BufferedReader br = null;
+
+
+        try {
+            fr = new FileReader(fp);
+            br = new BufferedReader(fr);
+
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+
+        while (true) {
+            try {
+                String line = br.readLine();
+
+                if (line == null) {
+                    break;
+                }
+
+                String[] words = line.split(" ");
+                String outKey = words[0];
+
+                if (mp.containsKey(outKey)) {
+                    Map<String, Float> extract = mp.get(outKey);
+                    String inner_key = words[2];
+                    Float score = new Float(words[4]);
+                    extract.put(inner_key,score);
+                } else {
+
+                    String inner_key = words[2];
+                    Float score = new Float(words[4]);
+                    Map<String, Float> temp = new LinkedHashMap<>();
+                    temp.put(inner_key, score);
+                    mp.put(outKey, temp);
+                }
+            } catch (NullPointerException n) {
+                System.out.println(n.getMessage());
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+
+        }
+        return mp;
+
+    }
     /**
      * @author: Amith RC
      * Helper method to find the Document length. Used only in the spearman.

@@ -1,5 +1,6 @@
 package main.java.searcher;
 
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -125,7 +126,6 @@ public class Searcher {
 
 			try {
 				if(output_file_name != null){
-
 					File e = new File(output_file_name);
 					if (e.exists()) {
 						e.delete();
