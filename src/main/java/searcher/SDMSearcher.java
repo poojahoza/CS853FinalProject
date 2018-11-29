@@ -344,4 +344,7 @@ public class SDMSearcher extends Searcher{
     public String getMethodName(){
         return this.methodName;
     }
+    public void print(){
+        System.out.println(query_ordered_doc_pair);
+    }
     }
