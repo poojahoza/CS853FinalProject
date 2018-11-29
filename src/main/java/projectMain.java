@@ -4,6 +4,7 @@ import java.io.IOException;
 import main.java.indexer.IndexBuilder;
 import main.java.indexer.IndexBuilderWithEntities;
 import main.java.indexer.EntityIndexBuilder;
+import main.java.indexer.EntityIndexBuilderBigram;
 import main.java.searcher.Searcher;
 import main.java.util.constants;
 import main.java.util.Util;
@@ -24,6 +25,7 @@ public class projectMain
     {
         String dest;
         String entity_dest;
+        String entity_bigram_dest;
         String entity_field_dest;
         if( args.length < 3 )
         {
@@ -34,10 +36,12 @@ public class projectMain
         {
             dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
             entity_dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"entity_indexed_file";
+            entity_bigram_dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"entity_bigram_indexed_file";
             entity_field_dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"entity_field_indexed_file";
             constants.setIndexFileName(args[0]);
             constants.setDirectoryName(dest);
             constants.setEntityDirectoryName(entity_dest);
+            constants.setEntityBigramDirectoryName(entity_bigram_dest);
             constants.setDirectoryNameWithEntityField(entity_field_dest);
 
             constants.setOutlineCbor(args[1]);
@@ -71,6 +75,13 @@ public class projectMain
             ranked_entities.clear();
             ranked_entities = entity_methods.getBM25entitiesAsBody(p);
             entity_methods.writeEntitiesToFile(ranked_entities, "output_BM25_Entites_Body_Ranking.txt");
+
+            EntityIndexBuilderBigram elb = new EntityIndexBuilderBigram();
+            elb.getEntityIndexWriter();
+
+            ranked_entities.clear();
+            ranked_entities = entity_methods.getBM25entitiesbigramAsBody(p);
+            entity_methods.writeEntitiesToFile(ranked_entities, "output_BM25_Bigram_Entites_Body_Ranking.txt");
 
             /*EntitiesMethods entity_methods = new EntitiesMethods();
             entity_methods.getBM25entities(p);*/

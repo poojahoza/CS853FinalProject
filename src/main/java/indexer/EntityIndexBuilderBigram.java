@@ -1,39 +1,30 @@
-
 package main.java.indexer;
+
+import edu.unh.cs.treccar_v2.Data;
+import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 import main.java.util.constants;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
+import org.apache.lucene.analysis.shingle.ShingleAnalyzerWrapper;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.StringField;
-
+import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-
-import org.apache.lucene.index.IndexOptions;
-
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
-import edu.unh.cs.treccar_v2.read_data.DeserializeData;
-import edu.unh.cs.treccar_v2.Data;
-
-import java.io.IOException;
-import java.nio.file.Paths;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Paths;
 
-/**
- * Creates the index for the given corpus
- * @author Team 3!
- *
- */
-public class EntityIndexBuilder
-{
+public class EntityIndexBuilderBigram {
     private IndexWriter entityIndexWriter;
 
-    public EntityIndexBuilder()
+    public EntityIndexBuilderBigram()
     {
         entityIndexWriter = null;
     }
@@ -52,10 +43,10 @@ public class EntityIndexBuilder
         {
 
             //Get the path of the index
-            Directory indexDir = FSDirectory.open(Paths.get(constants.ENTITY_DIRECTORY_NAME));
+            Directory indexDir = FSDirectory.open(Paths.get(constants.ENTITY_BIGRAM_DIRECTORY_NAME));
 
             //Create the configuration for the index
-            IndexWriterConfig config = new IndexWriterConfig(new EnglishAnalyzer());
+            IndexWriterConfig config = new IndexWriterConfig(new ShingleAnalyzerWrapper(new EnglishAnalyzer(), 2, 2));
             config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
 
             //Create the IndexWriter

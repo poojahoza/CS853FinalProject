@@ -4,6 +4,7 @@ import main.java.searcher.Searcher;
 import main.java.util.constants;
 
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
+import org.apache.lucene.analysis.shingle.ShingleAnalyzerWrapper;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.TopDocs;
@@ -27,7 +28,7 @@ public class EntitiesSearcher extends Searcher{
     {
         searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(constants.DIRECTORY_NAME_WITH_ENTITY_FIELD))));
         parser = new QueryParser("body", new StandardAnalyzer());
-        output_file_name = "Output_BM25_Standard_Ranking.txt";
+        output_file_name = "Output_BM25_Standard_Ranking_Entity_Field.txt";
     }
 
     public EntitiesSearcher(String indexMethodName) throws IOException {
@@ -36,6 +37,11 @@ public class EntitiesSearcher extends Searcher{
             searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(constants.ENTITY_DIRECTORY_NAME))));
             parser = new QueryParser("body", new EnglishAnalyzer());
             output_file_name = "Output_BM25_Entities_Ranking.txt";
+        }
+        else if(indexMethodName.equals("entitiesBigramIndex")) {
+            searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(constants.ENTITY_BIGRAM_DIRECTORY_NAME))));
+            parser = new QueryParser("body", new ShingleAnalyzerWrapper(new EnglishAnalyzer(), 2, 2));
+            output_file_name = "Output_BM25_Bigram_Entities_Ranking.txt";
         }
     }
 

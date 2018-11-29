@@ -64,6 +64,25 @@ public class EntitiesMethods{
         return ranked_entities;
     }
 
+    public Map<String, Map<String, Integer>> getBM25entitiesbigramAsBody(Map<String,String> outline_cbor){
+
+        Map<String, Map<String,String[]>> entities = new LinkedHashMap<String, Map<String, String[]>>();
+        Map<String, Map<String, Integer>> ranked_entities = new LinkedHashMap<String, Map<String, Integer>>();
+
+        EntitiesSearcher entity_searcher = null;
+        try {
+            entity_searcher = new EntitiesSearcher("entitiesBigramIndex");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        entities = entity_searcher.getBM25Result(outline_cbor);
+
+        EntitiesUtils entity_ranking = new EntitiesUtils();
+        ranked_entities = entity_ranking.getRankedEntitiesByCount(entities);
+
+        return ranked_entities;
+    }
+
     public void writeEntitiesToFile(Map<String, Map<String, Integer>> entities, String output_file_name){
         EntitiesUtils entity_ranking = new EntitiesUtils();
         entity_ranking.writeEntitiesRankingFile(entities, output_file_name);
