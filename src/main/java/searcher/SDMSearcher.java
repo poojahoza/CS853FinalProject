@@ -207,7 +207,6 @@ public class SDMSearcher extends Searcher{
             for(Map.Entry<String, Float> m : temp.entrySet())
                 createRankingpair(queryId, m.getKey(), m.getValue());
         }
-        System.out.println(query_doc_pair.entrySet().size());
     }
     private void createRankingpair(String queryId, String docId, Float score){
 

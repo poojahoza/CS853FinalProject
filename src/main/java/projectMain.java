@@ -36,14 +36,14 @@ public class projectMain
 
             constants.setBigramDirectory(System.getProperty("user.dir")+System.getProperty("file.separator")+"BigramIndexed_file");
 
-            constants.setWindowDirectory(System.getProperty("user.dir")+System.getProperty("file.separator")+"UnBigram_file");
+            constants.setWindowDirectory(System.getProperty("user.dir")+System.getProperty("file.separator")+"WindowIndexed_file");
 
             constants.setOutlineCbor(args[1]);
             constants.setQrelPath(args[2]);
 
             //Create the new lucene Index
-            IndexBuilder defaultIndex = new IndexBuilder();
-            defaultIndex.getIndexWriter();
+            /*IndexBuilder defaultIndex = new IndexBuilder();
+            defaultIndex.getIndexWriter();*/
 
             BigramIndexBuilder BigramIndex = new BigramIndexBuilder();
             BigramIndex.getIndexWriter("BigramIndex");
@@ -158,19 +158,6 @@ public class projectMain
             SDMSearcher SDM_BM25RR = new SDMSearcher("SDM_with_BM25_reverse_rank");
             SDM_BM25RR.setBM25SDMRR();
             constants.sdmQueryDocPiar.put(SDM_BM25RR.getMethodName(), SDM_BM25RR.get_query_doc_pair());
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         }
 
