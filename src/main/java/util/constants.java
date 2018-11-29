@@ -11,7 +11,10 @@ public class constants
     public static String BIGRAM_DIRECTORY = "";
     public static String WINDOW_DIRECTORY = "";
     public static Map<String, Map<String,Integer>> queryDocPair = new LinkedHashMap<String, Map<String, Integer>>();
+    public static Map<String, String> methodRunfile = new LinkedHashMap<>();
     public static final int windowSize = 6;
+
+
 
     public static String OUTLINE_CBOR="";
     public static String QREL_PATH="";

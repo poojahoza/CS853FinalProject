@@ -162,5 +162,8 @@ public class Searcher {
 
 			}
 		}
+		public String getOutputFileName(){
+	    	return this.output_file_name;
+		}
 }
 
