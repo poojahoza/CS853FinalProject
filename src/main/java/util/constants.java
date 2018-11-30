@@ -15,14 +15,15 @@ public class constants
     public static String WINDOW_DIRECTORY = "";
     public static Map<String, Map<String,Integer>> queryDocPair = new LinkedHashMap<String, Map<String, Integer>>();
     public static Map<String, String> methodRunfile = new LinkedHashMap<>();
-    public static Map<String, Map<String, Map<String, Float>>> sdmQueryDocPiar = new LinkedHashMap<>();
+    public static Map<String, Map<String, Map<String, String[]>>> lmQueryDocPair = new LinkedHashMap<>();
+    public static Map<String, Map<String, Map<String, Float>>> sdmQueryDocPair = new LinkedHashMap<>();
     public static final int windowSize = 6;
 
 
 
     public static String OUTLINE_CBOR="";
     public static String QREL_PATH="";
-    public static float lambda = 0.9f;
+    public static float lambda = 0.99f;
     public static float Mu = 1000;
 
     public static Map<String, Map<String,Integer>> queryDocPairRead;

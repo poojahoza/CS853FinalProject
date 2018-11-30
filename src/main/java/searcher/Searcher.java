@@ -84,12 +84,36 @@ public class Searcher {
 				constants.queryDocPair.put(outer_key,temp);
 			}
 		}
-	    
+
+		private void createEntityQueryDocPair(String outer_key, String inner_key, String entities, Map<String, Map<String,String[]>> searcher_entitiesList)
+		{
+			String[] p_entities;
+			if(entities.equals("")) {
+				p_entities = new String[0];
+			}
+			else {
+				p_entities = entities.split(",,,");
+			}
+
+			if(searcher_entitiesList.containsKey(outer_key))
+			{
+				Map<String, String[]> extract = searcher_entitiesList.get(outer_key);
+				extract.put(inner_key, p_entities);
+			}
+			else
+			{
+
+				Map<String, String[]> temp = new LinkedHashMap<String, String[]>();
+				temp.put(inner_key, p_entities);
+				searcher_entitiesList.put(outer_key,temp);
+			}
+		}
+
 	    
 	    /**
 	     * 
 	     */
-	    private List<String> getRankings(ScoreDoc[] scoreDocs, String queryId)
+	    private List<String> getRankings(ScoreDoc[] scoreDocs, String queryId, Map<String, Map<String,String[]>> searcher_entitiesList)
 	    	    throws IOException {
 	    	
 	    	List<String> rankings = new ArrayList<String>();
@@ -107,10 +131,16 @@ public class Searcher {
 				//Print out the results from the rank document
 				String docScore = String.valueOf(scoringDoc.score);
 				String paraId = rankedDoc.getField("id").stringValue();
+				System.out.println(rankedDoc.getField("entities"));
+				String paraEntities = "";
+				if(rankedDoc.getField("entities") != null){
+					paraEntities = rankedDoc.getField("entities").stringValue();
+				}
 				//String paraBody = rankedDoc.getField("body").stringValue();
 				String paraRank = String.valueOf(ind+1);
 				rankings.add(queryId + " Q0 " + paraId + " " + paraRank + " " + docScore + " "+teamName + "-" + methodName);
 				createRankingQueryDocPair(queryId, paraId, Integer.valueOf(paraRank));
+				createEntityQueryDocPair(queryId, paraId, paraEntities, searcher_entitiesList);
 			}
 
 	    	return rankings;
@@ -120,9 +150,11 @@ public class Searcher {
 	     * Output the rankings for Assignment 2
 	     * @param p Map containing the query Id and the query value
 	     */
-	    public void writeRankings(Map<String,String> p)
+	    public void writeRankings(Map<String,String> p, String methodname)
 		{
 			Path file = Paths.get(output_file_name);
+			Map<String, Map<String,String[]>> searcher_entitiesList = new LinkedHashMap<String, Map<String, String[]>>();
+			System.out.println("Method Name : "+methodname);
 
 			try {
 				if(output_file_name != null){
@@ -147,7 +179,7 @@ public class Searcher {
 					TopDocs searchDocs = this.performSearch(m.getValue(), 100);
 					
 					ScoreDoc[] scoringDocuments = searchDocs.scoreDocs;
-					List<String> formattedRankings = this.getRankings(scoringDocuments, m.getKey());
+					List<String> formattedRankings = this.getRankings(scoringDocuments, m.getKey(), searcher_entitiesList);
 					Files.write(file, formattedRankings, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
 
 				}
@@ -161,6 +193,7 @@ public class Searcher {
 				}
 
 			}
+			constants.lmQueryDocPair.put(methodname, searcher_entitiesList);
 		}
 		public String getOutputFileName(){
 	    	return this.output_file_name;

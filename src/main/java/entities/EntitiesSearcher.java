@@ -93,7 +93,7 @@ public class EntitiesSearcher extends Searcher{
 
             TopDocs resultantDocs = null;
             try {
-                resultantDocs = this.performSearch(data.getValue(), 1000);
+                resultantDocs = this.performSearch(data.getValue(), 100);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ParseException e) {

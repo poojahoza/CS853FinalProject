@@ -113,6 +113,12 @@ public class IndexBuilder
 					//Then we add the paragraph id and the paragraph body for searching
 					doc.add(new StringField("id", p.getParaId(), Field.Store.YES));
 					doc.add(new Field("body", p.getTextOnly(), contentType));
+					String para_entities = "";
+					for(int x = 0; x < p.getEntitiesOnly().size(); x++){
+						//form 1 field for entities. The entities are joined using the limiter ',,,'
+						para_entities += p.getEntitiesOnly().get(x)+",,,";
+					}
+					doc.add(new StringField("entities", para_entities, Field.Store.YES));
 	            	  
 	            	  //From here we add the document to the indexwriter
 

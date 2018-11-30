@@ -148,7 +148,15 @@ public class BigramIndexBuilder extends IndexBuilder {
                     doc.add(new Field("body", terms.get(i % terms.size()) + " " + terms.get((i + j) % terms.size()), contentType));
                     doc.add(new Field("body", terms.get((i + j) % terms.size()) + " " + terms.get(i % terms.size()), contentType));
                 }
+                String para_entities = "";
+                for(int x = 0; x < p.getEntitiesOnly().size(); x++){
+                    //form 1 field for entities. The entities are joined using the limiter ',,,'
+                    para_entities += p.getEntitiesOnly().get(x)+",,,";
+                }
+                doc.add(new StringField("entities", para_entities, Field.Store.YES));
             }
+
+
             //From here we add the document to the indexwriter
 
             try {

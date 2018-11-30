@@ -1,5 +1,6 @@
 package main.java.entities;
 
+import main.java.util.constants;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
@@ -72,6 +73,49 @@ public class EntitiesUtils{
         return sortedEntitiesMap;
     }
 
+    private Map<String, Map<String, Integer>> sortSDMRankedEntitiesByCount(Map<String, Map<String, Integer>> ranking_entities){
+        Map<String, Map<String, Integer>> sortedEntitiesMap = new LinkedHashMap<String, Map<String, Integer>>();
+
+        for(Map.Entry<String,Map<String, Integer>> queryMap: ranking_entities.entrySet()){
+            Map<String, Integer> entity_entry = SortedMap(queryMap.getValue());
+            sortedEntitiesMap.put(queryMap.getKey(), entity_entry);
+        }
+        return sortedEntitiesMap;
+    }
+
+    private void getSDMRankedEntitiesByCount(Map<String, Map<String,String[]>> entities, Map<String, Map<String, Integer>> ranking_entities){
+
+        for(Map.Entry<String,Map<String,String[]>> queryMap: entities.entrySet()){
+
+            Map<String,String[]> entityMap = queryMap.getValue();
+
+            for(Map.Entry<String,String[]> entity:entityMap.entrySet()){
+
+                String[] entities_list = entity.getValue();
+
+                for(String e: entities_list){
+                    if(ranking_entities.containsKey(queryMap.getKey())){
+
+                        Map<String, Integer> query_entity = ranking_entities.get(queryMap.getKey());
+
+                        if(query_entity.containsKey(e)){
+                            query_entity.put(e, query_entity.get(e)+1);
+                        }
+                        else{
+                            query_entity.put(e, 1);
+                        }
+                    }else{
+                        Map<String,Integer> temp = new LinkedHashMap<String,Integer>();
+                        temp.put(e, 1);
+                        ranking_entities.put(queryMap.getKey(),temp);
+                    }
+
+                }
+
+            }
+        }
+    }
+
     public Map<String, String> expandQueryWithEntities(Map<String, Map<String, Integer>> entities, Map<String, String> outlineCbor){
 
         Map<String, String> expanded_queries = new LinkedHashMap<String, String>();
@@ -92,6 +136,62 @@ public class EntitiesUtils{
         }
 
         return expanded_queries;
+    }
+
+    Map<String, Map<String, Integer>> getSDMLaPlaceRankedEntities(){
+        Map<String, Map<String, Integer>> sdm_laplace_ranking_entities = new LinkedHashMap<String, Map<String, Integer>>();
+        if(constants.lmQueryDocPair.containsKey("UnigramLaplace")){
+            getSDMRankedEntitiesByCount(constants.lmQueryDocPair.get("UnigramLaplace"), sdm_laplace_ranking_entities);
+        }
+        if(constants.lmQueryDocPair.containsKey("BigramLaplace")){
+            getSDMRankedEntitiesByCount(constants.lmQueryDocPair.get("BigramLaplace"), sdm_laplace_ranking_entities);
+        }
+        if(constants.lmQueryDocPair.containsKey("WindowLaplace")){
+            getSDMRankedEntitiesByCount(constants.lmQueryDocPair.get("WindowLaplace"), sdm_laplace_ranking_entities);
+        }
+        return sortSDMRankedEntitiesByCount(sdm_laplace_ranking_entities);
+    }
+
+    Map<String, Map<String, Integer>> getSDMJMRankedEntities(){
+        Map<String, Map<String, Integer>> sdm_JM_ranking_entities = new LinkedHashMap<String, Map<String, Integer>>();
+        if(constants.lmQueryDocPair.containsKey("UnigramJM")){
+            getSDMRankedEntitiesByCount(constants.lmQueryDocPair.get("UnigramJM"), sdm_JM_ranking_entities);
+        }
+        if(constants.lmQueryDocPair.containsKey("BigramJM")){
+            getSDMRankedEntitiesByCount(constants.lmQueryDocPair.get("BigramJM"), sdm_JM_ranking_entities);
+        }
+        if(constants.lmQueryDocPair.containsKey("WindowJM")){
+            getSDMRankedEntitiesByCount(constants.lmQueryDocPair.get("WindowJM"), sdm_JM_ranking_entities);
+        }
+        return sortSDMRankedEntitiesByCount(sdm_JM_ranking_entities);
+    }
+
+    Map<String, Map<String, Integer>> getSDMDirchletRankedEntities(){
+        Map<String, Map<String, Integer>> sdm_Dirchlet_ranking_entities = new LinkedHashMap<String, Map<String, Integer>>();
+        if(constants.lmQueryDocPair.containsKey("UnigramDrichlet")){
+            getSDMRankedEntitiesByCount(constants.lmQueryDocPair.get("UnigramDrichlet"), sdm_Dirchlet_ranking_entities);
+        }
+        if(constants.lmQueryDocPair.containsKey("BigramDrichlet")){
+            getSDMRankedEntitiesByCount(constants.lmQueryDocPair.get("BigramDrichlet"), sdm_Dirchlet_ranking_entities);
+        }
+        if(constants.lmQueryDocPair.containsKey("WindowDrichlet")){
+            getSDMRankedEntitiesByCount(constants.lmQueryDocPair.get("WindowDrichlet"), sdm_Dirchlet_ranking_entities);
+        }
+        return sortSDMRankedEntitiesByCount(sdm_Dirchlet_ranking_entities);
+    }
+
+    Map<String, Map<String, Integer>> getSDMBM25RankedEntities(){
+        Map<String, Map<String, Integer>> sdm_BM25_ranking_entities = new LinkedHashMap<String, Map<String, Integer>>();
+        if(constants.lmQueryDocPair.containsKey("UnigramBM25")){
+            getSDMRankedEntitiesByCount(constants.lmQueryDocPair.get("UnigramBM25"), sdm_BM25_ranking_entities);
+        }
+        if(constants.lmQueryDocPair.containsKey("BigramBM25")){
+            getSDMRankedEntitiesByCount(constants.lmQueryDocPair.get("BigramBM25"), sdm_BM25_ranking_entities);
+        }
+        if(constants.lmQueryDocPair.containsKey("WindowBM25")){
+            getSDMRankedEntitiesByCount(constants.lmQueryDocPair.get("WindowBM25"), sdm_BM25_ranking_entities);
+        }
+        return sortSDMRankedEntitiesByCount(sdm_BM25_ranking_entities);
     }
 
     void writeEntitiesRankingFile(Map<String, Map<String, Integer>> entities, String output_file_name){

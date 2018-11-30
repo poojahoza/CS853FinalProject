@@ -2,6 +2,7 @@ package main.java.searcher;
 
 import main.java.util.constants;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
@@ -21,6 +22,11 @@ public class base extends Searcher {
     }
     public base(String methodName) throws IOException{
         this();
+        if(methodName.contains("Unigram")){
+            searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(constants.DIRECTORY_NAME_WITH_ENTITY_FIELD))));
+            parser = new QueryParser("body", new StandardAnalyzer());
+        }
+
         if(methodName.contains("Bigram")){
             searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(constants.BIGRAM_DIRECTORY))));
             parser = new QueryParser("body", new ShingleAnalyzerWrapper(new EnglishAnalyzer(),2, 2));

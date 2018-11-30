@@ -2,6 +2,7 @@ package main.java.entities;
 
 import main.java.entities.EntitiesSearcher;
 import main.java.entities.EntitiesUtils;
+import main.java.util.constants;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -80,6 +81,53 @@ public class EntitiesMethods{
         EntitiesUtils entity_ranking = new EntitiesUtils();
         ranked_entities = entity_ranking.getRankedEntitiesByCount(entities);
 
+        return ranked_entities;
+    }
+
+    public  Map<String, Map<String, Integer>> getSDMLaPlaceentities(){
+        EntitiesUtils entity_ranking = new EntitiesUtils();
+        return entity_ranking.getSDMLaPlaceRankedEntities();
+    }
+
+    public  Map<String, Map<String, Integer>> getSDMJMentities(){
+        EntitiesUtils entity_ranking = new EntitiesUtils();
+        return entity_ranking.getSDMJMRankedEntities();
+    }
+
+    public  Map<String, Map<String, Integer>> getSDMDirchletentities(){
+        EntitiesUtils entity_ranking = new EntitiesUtils();
+        return entity_ranking.getSDMDirchletRankedEntities();
+    }
+
+    public  Map<String, Map<String, Integer>> getSDMBM25etentities(){
+        EntitiesUtils entity_ranking = new EntitiesUtils();
+        return entity_ranking.getSDMBM25RankedEntities();
+    }
+
+    public Map<String, Map<String, Integer>> getUnigramLaPlaceentities() {
+        Map<String, Map<String, Integer>> ranked_entities = new LinkedHashMap<String, Map<String, Integer>>();
+        if(constants.lmQueryDocPair.containsKey("UnigramLaplace")){
+            EntitiesUtils entity_ranking = new EntitiesUtils();
+            ranked_entities = entity_ranking.getRankedEntitiesByCount(constants.lmQueryDocPair.get("UnigramLaplace"));
+        }
+        return ranked_entities;
+    }
+
+    public Map<String, Map<String, Integer>> getBigramLaPlaceentities() {
+        Map<String, Map<String, Integer>> ranked_entities = new LinkedHashMap<String, Map<String, Integer>>();
+        if(constants.lmQueryDocPair.containsKey("BigramLaplace")){
+            EntitiesUtils entity_ranking = new EntitiesUtils();
+            ranked_entities = entity_ranking.getRankedEntitiesByCount(constants.lmQueryDocPair.get("BigramLaplace"));
+        }
+        return ranked_entities;
+    }
+
+    public Map<String, Map<String, Integer>> getWindowBigramLaPlaceentities() {
+        Map<String, Map<String, Integer>> ranked_entities = new LinkedHashMap<String, Map<String, Integer>>();
+        if(constants.lmQueryDocPair.containsKey("WindowLaplace")){
+            EntitiesUtils entity_ranking = new EntitiesUtils();
+            ranked_entities = entity_ranking.getRankedEntitiesByCount(constants.lmQueryDocPair.get("WindowLaplace"));
+        }
         return ranked_entities;
     }
 
