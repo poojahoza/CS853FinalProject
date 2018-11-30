@@ -58,22 +58,24 @@ public class projectMain
             constants.setQrelPath(args[2]);
 
             //Create the new lucene Index
-            IndexBuilder defaultIndex = new IndexBuilder();
+            /*IndexBuilder defaultIndex = new IndexBuilder();
             defaultIndex.getIndexWriter();
 
             BigramIndexBuilder BigramIndex = new BigramIndexBuilder();
             BigramIndex.getIndexWriter("BigramIndex");
 
             BigramIndexBuilder windowIndex = new BigramIndexBuilder();
-            windowIndex.getIndexWriter("WindowIndex");
+            windowIndex.getIndexWriter("WindowIndex");*/
 
             /*IndexBuilderWithEntities ibe = new IndexBuilderWithEntities();
             ibe.getIndexWriter();*/
 
             Map<String,String> p = Util.readOutline(constants.OUTLINE_CBOR);
 
-            Searcher BM25Searcher = new Searcher();
-            BM25Searcher.writeRankings(p, "UnigramBM25");
+            /*Searcher BM25Searcher = new Searcher();
+            BM25Searcher.writeRankings(p);*/
+            base BM25Searcher = new base("UnigramBM25");
+            BM25Searcher.writeRankings(p);
 
            EntitiesMethods entity_methods = new EntitiesMethods();
             ranked_entities = entity_methods.getBM25entities(p);
@@ -106,7 +108,7 @@ public class projectMain
 
             base uniLapalce = new base("UnigramLaplace");
             uniLapalce.setUnigramLaplace();
-            uniLapalce.writeRankings(p, "UnigramLaplace");
+            uniLapalce.writeRankings(p);
 
             constants.methodRunfile.put("UnigramLaplace", uniLapalce.getOutputFileName());
 
@@ -114,7 +116,7 @@ public class projectMain
 
             base BiLaplace = new base("BigramLaplace");
             BiLaplace.setBigramLaplace();
-            BiLaplace.writeRankings(p, "BigramLaplace");
+            BiLaplace.writeRankings(p);
 
             constants.methodRunfile.put("BigramLaplace", BiLaplace.getOutputFileName());
 
@@ -122,7 +124,7 @@ public class projectMain
 
             base windowLaplace = new base("WindowLaplace");
             windowLaplace.setWindowLaplace();
-            windowLaplace.writeRankings(p, "WindowLaplace");
+            windowLaplace.writeRankings(p);
 
             constants.methodRunfile.put("WindowLaplace", windowLaplace.getOutputFileName());
 
@@ -130,13 +132,13 @@ public class projectMain
 
             base uniJM = new base("UnigramJM");
             uniJM.setUnigramJM();
-            uniJM.writeRankings(p, "UnigramJM");
+            uniJM.writeRankings(p);
 
             constants.methodRunfile.put("UnigramJM", uniJM.getOutputFileName());
 
             base BiJM = new base("BigramJM");
             BiJM.setBigramJM();
-            BiJM.writeRankings(p, "BigramJM");
+            BiJM.writeRankings(p);
 
             constants.methodRunfile.put("BigramJM", BiJM.getOutputFileName());
 
@@ -144,7 +146,7 @@ public class projectMain
 
             base windowJm = new base("WindowJM");
             windowJm.setWindowJM();
-            windowJm.writeRankings(p, "WindowJM");
+            windowJm.writeRankings(p);
 
             constants.methodRunfile.put("WindowJM", windowJm.getOutputFileName());
 
@@ -152,7 +154,7 @@ public class projectMain
 
             base uniDrichlet = new base("UnigramDrichlet");
             uniDrichlet.setUnigramDirichlet();
-            uniDrichlet.writeRankings(p, "UnigramDrichlet");
+            uniDrichlet.writeRankings(p);
 
             constants.methodRunfile.put("UnigramDrichlet" , uniDrichlet.getOutputFileName());
 
@@ -161,7 +163,7 @@ public class projectMain
 
             base BiDrichlet = new base("BigramDrichlet");
             BiDrichlet.setBigramDirichlet();
-            BiDrichlet.writeRankings(p, "BigramDrichlet");
+            BiDrichlet.writeRankings(p);
 
             constants.methodRunfile.put("BigramDrichlet", BiDrichlet.getOutputFileName());
 
@@ -169,7 +171,7 @@ public class projectMain
 
             base windowDrichlet = new base("WindowDrichlet");
             windowDrichlet.setWindowDritchlet();
-            windowDrichlet.writeRankings(p, "WindowDrichlet");
+            windowDrichlet.writeRankings(p);
 
             constants.methodRunfile.put("WindowDrichlet", windowDrichlet.getOutputFileName());
 
@@ -177,13 +179,13 @@ public class projectMain
 
             base BiBM25 = new base("BigramBM25");
             BiBM25.setBigramBM25();
-            BiBM25.writeRankings(p, "BigramBM25");
+            BiBM25.writeRankings(p);
 
             constants.methodRunfile.put("BigramBM25", BiBM25.getOutputFileName());
 
             base windowBM25 = new base("WindowBM25");
             windowBM25.setWindowBM25();
-            windowBM25.writeRankings(p, "WindowBM25");
+            windowBM25.writeRankings(p);
 
             constants.methodRunfile.put("WindowBM25", windowBM25.getOutputFileName());
 
