@@ -31,6 +31,8 @@ public class projectMain
 
             constants.setOutlineCbor(args[0]);
             constants.setQrelPath(args[1]);
+
+
             Map<String,String> p = Util.readOutline(constants.OUTLINE_CBOR);
 
             QueryExpansion q= new QueryExpansion(p);
@@ -40,7 +42,7 @@ public class projectMain
             q.runPrfIndividual("PRF_PER_QUERY_TERM",10);
             q.runPrfIndividualIDF("PRF_IDF",100);
             q.runPrfIndividualDF("PRF_DF",10);
-
+            q.runPrfIndexElimination("Index_ELIM",100);
         }
     }
 }

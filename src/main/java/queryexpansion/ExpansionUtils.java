@@ -2,7 +2,6 @@ package main.java.queryexpansion;
 
 /*Import statements from the CS853 package*/
 
-import main.java.searcher.BM25;
 import main.java.util.Util;
 import main.java.util.constants;
 import org.apache.lucene.index.*;
@@ -11,12 +10,13 @@ import org.apache.lucene.search.TermStatistics;
 import org.apache.lucene.search.similarities.BasicStats;
 import org.apache.lucene.store.FSDirectory;
 
+
 /*Import statements from the java*/
 import java.io.*;
 
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.logging.Logger;
+
 
 
 public class ExpansionUtils
@@ -29,19 +29,20 @@ public class ExpansionUtils
 
         /*some K values*/
         private int MAX_DOC = 5;
-        private int MAX_TERM=10;
+        private int MAX_TERM =10;
         private int MAX_IDF_TERM=5;
 
-        /* PATH to GLOVE FILES*/
+//        /* PATH to GLOVE FILES*/
         private final String glovefile_50d="//home//team3//glove_word_embeddings//glove.6B.50d.txt";
         private final String glovefile_100d="//home//team3//glove_word_embeddings//glove.6B.100d.txt";
         private final String glovefile_200d="//home//team3//glove_word_embeddings//glove.6B.200d.txt";
         private final  String glovefile_300d="//home//team3//glove_word_embeddings//glove.6B.300d.txt";
+        private final  String google_300d= "//home//team3//google_word_embeddings//GoogleNews-vectors-negative300.txt";
 
-//    private final String glovefile_50d="D:\\glove.6B\\glove.6B.50d.txt";
-//    private final String glovefile_100d="D:\\glove.6B\\glove.6B.100d.txt";
-//    private final String glovefile_200d="D:\\glove.6B\\glove.6B.200d.txt";
-//    private final  String glovefile_300d="D:\\glove.6B\\glove.6B.300d.txt";
+//        private final String glovefile_50d="D:\\glove.6B\\glove.6B.50d.txt";
+//        private final String glovefile_100d="D:\\glove.6B\\glove.6B.100d.txt";
+//        private final String glovefile_200d="D:\\glove.6B\\glove.6B.200d.txt";
+//        private final  String glovefile_300d="D:\\glove.6B\\glove.6B.300d.txt";
 
         private  String[] array = {"a", "about", "above", "above", "across", "after", "afterwards", "again", "against", "all", "almost", "alone", "along", "already",
                   "also","although","always","am","among", "amongst", "amoungst", "amount",  "an", "and", "another", "any","anyhow","anyone","anything","anyway",
@@ -117,7 +118,6 @@ public class ExpansionUtils
     private void readVector()
         {
             System.out.println("Loading Wording Vector......");
-            //GLOVE = this.readWordVectors(PROP.getProperty("glovefile-200d"));
             GLOVE = this.readWordVectors(glovefile_200d);
         }
 
@@ -661,6 +661,7 @@ public class ExpansionUtils
                 double val=0.0;
                 try {
                     val = getIDF(s);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -680,6 +681,8 @@ public class ExpansionUtils
 
                  return topTerms;
         }
+
+
 
     /**
      *
@@ -719,6 +722,94 @@ public class ExpansionUtils
             return topTerms;
         }
 
+    private String[] Eliminate(String orig)
+    {
+        StringBuilder sb= new StringBuilder();
+        int size = orig.split(" ").length;
+        String[] split = processOriginalTerms(orig);
+        Map<String,Double> unsorted = new LinkedHashMap<>();
+        if(size==1)
+        {
+            return orig.split(" ");
+        }
+        else
+        {
+            for(String s:split)
+            {
+                if(STOP_WORDS.contains(s)) {continue;}
+                double val=0.0;
+                try {
+                    val = getIDF(s);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                unsorted.put(s,val);
+            }
+            Map<String,Double> sorted = sortMAP(unsorted);
+            int ret=0;
+            int sortedSize = sorted.size();
+
+            if(sortedSize % 2== 0)
+            {
+                ret = (sortedSize/2);
+            }else
+            {
+                ret= (sortedSize/2)+1;
+            }
+
+            int c=0;
+            for(Map.Entry<String,Double> m: sorted.entrySet())
+            {
+                c++;
+                sb.append(m.getKey());
+                sb.append(" ");
+                if(c==ret) break;
+            }
+        }
+        return sb.toString().split(" ");
+    }
+
+
+    private ArrayList<String> getTopTermsIndexElimination(ArrayList<String> processed,String OriginalQueryTerms)
+    {
+        ensureLoadGlove();
+        String[] split= processOriginalTerms(OriginalQueryTerms);
+        ArrayList<String> topTerms = new ArrayList<>(Arrays.asList(split));
+
+        for(String oTerms:Eliminate(OriginalQueryTerms))
+        {
+
+            Map<String,Double> eachQueryTerm = new LinkedHashMap<>();
+            if(!GLOVE.containsKey(oTerms) || STOP_WORDS.contains(oTerms)) {continue;}
+
+            ArrayList<Double> v1 = GLOVE.get(oTerms);
+
+            for(String cTerms:processed)
+            {
+                if(GLOVE.containsKey(cTerms) && !oTerms.equals(cTerms))
+                {
+                    ArrayList<Double> v2 = GLOVE.get(cTerms);
+                    Double val = CosineSimilarity(v1,v2);
+                    eachQueryTerm.put(cTerms,val);
+                }
+            }
+            /*Concatenate each term*/
+            if(!eachQueryTerm.isEmpty())
+            {
+                ArrayList<String> temp = getTopK(eachQueryTerm);
+                for(String s:temp)
+                {
+                    topTerms.add(s);
+
+                }
+
+            }
+
+        }
+        return topTerms;
+
+    }
+
     /**
      *
      * @param docList
@@ -753,6 +844,22 @@ public class ExpansionUtils
             return ArrayListInToString(res);
         }
 
+        private ArrayList<String> getKVal(ArrayList<String> q)
+        {
+            ArrayList<String> s= new ArrayList<>();
+            int c=0;
+            for(String s1:q)
+            {
+                c++;
+                s.add(s1);
+                if(c==MAX_TERM)
+                {
+                    break;
+                }
+            }
+            return s;
+        }
+
     /**
      *
      * @param docList
@@ -785,7 +892,28 @@ public class ExpansionUtils
             StringBuilder build = conCatTopParas(docList,MAX_DOC);
             ArrayList<String> processed = processDocument(build);
             ArrayList<String> topTerms = getTopTermsPerQueryTerm(processed,QueryTerms);
+
             ArrayList<String> res = DF(topTerms,QueryTerms);
+            return ArrayListInToString(res);
+        }
+
+
+
+
+    /**
+     *
+     * @param docList
+     * @param QueryTerms
+     * @returnReturns the Expanded Terms for the given query and returns the Expanded query as String.
+     *      *
+     */
+
+        String getTopKTermsIndexElimin(Map<String,Integer> docList,String QueryTerms)
+        {
+            StringBuilder build = conCatTopParas(docList,MAX_DOC);
+            ArrayList<String> processed = processDocument(build);
+            ArrayList<String> topTerms = getTopTermsIndexElimination(processed,QueryTerms);
+            ArrayList<String> res = getKVal(topTerms);
             return ArrayListInToString(res);
         }
 

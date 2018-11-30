@@ -1,6 +1,5 @@
 package main.java.queryexpansion;
 
-import main.java.searcher.BM25;
 import java.io.IOException;
 import java.util.*;
 
@@ -137,12 +136,10 @@ public class QueryExpansion
      * @param k
      */
 
-    private void prfIndividualRunnerDF(int k)
+       private void prfIndividualRunnerDF(int k)
         {
             Map<String, String> ExpandedTerms = new LinkedHashMap<>(OUTLINE.size());
             Map<String,Map<String,Integer>> prf = bm25.getRankings(OUTLINE);
-
-            int c=0;
 
             for(Map.Entry<String,Map<String,Integer>> InitSet: prf.entrySet())
             {
@@ -153,7 +150,7 @@ public class QueryExpansion
             System.out.println("Query Expansion => RPREC@DF = "+ EVAL.rprec(bm25.getRankings(ExpandedTerms)));
             System.out.println(" ");
             bm25.writeRankings(ExpandedTerms);
-            EXP.printMessage();
+
         }
 
     /**
@@ -163,11 +160,51 @@ public class QueryExpansion
      * Runs the DF method
      */
 
-    public void runPrfIndividualDF(String mName,int k)
+        public void runPrfIndividualDF(String mName,int k)
+            {
+                System.out.println("Called runPRFIndividualDF");
+                bm25.setmethodName(mName);
+                EXP.setMaxTerm(k);
+                prfIndividualRunnerDF(k);
+            }
+
+    /**
+     *
+     * @param k
+     * Performs Index Elimination by the high IDF terms.
+     */
+       private void prfIndividualIndexElimination(int k)
+        {
+            Map<String, String> ExpandedTerms = new LinkedHashMap<>(OUTLINE.size());
+            Map<String,Map<String,Integer>> prf = bm25.getRankings(OUTLINE);
+
+            int c=0;
+
+            for(Map.Entry<String,Map<String,Integer>> InitSet: prf.entrySet())
+            {
+                String expanded= EXP.getTopKTermsIndexElimin(InitSet.getValue(),OUTLINE.get(InitSet.getKey()));
+                ExpandedTerms.put(InitSet.getKey(),expanded);
+            }
+            System.out.println("Query Expansion => MAP@DF = "+ EVAL.map(bm25.getRankings(ExpandedTerms)));
+            System.out.println("Query Expansion => RPREC@DF = "+ EVAL.rprec(bm25.getRankings(ExpandedTerms)));
+            System.out.println(" ");
+            bm25.writeRankings(ExpandedTerms);
+            EXP.printMessage();
+        }
+
+        /**
+         *
+         * @param mName
+         * @param k
+         * Performs Index Elimination
+         */
+        public void runPrfIndexElimination(String mName,int k)
         {
             System.out.println("Called runPRFIndividualDF");
             bm25.setmethodName(mName);
             EXP.setMaxTerm(k);
-            prfIndividualRunnerDF(k);
+            prfIndividualIndexElimination(k);
         }
+
+
 }
