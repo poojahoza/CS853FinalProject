@@ -41,7 +41,7 @@ public class projectMain
             q.runPRF("PRF",10);
             q.runPrfIndividual("PRF_PER_QUERY_TERM",10);
             q.runPrfIndividualIDF("PRF_IDF",100);
-            q.runPrfIndividualDF("PRF_DF",10);
+            q.runPrfIndividualDF("PRF_DF",100);
             q.runPrfIndexElimination("Index_ELIM",100);
         }
     }

@@ -64,8 +64,10 @@ public class QueryExpansion
             System.out.println("Called runBM25");
             bm25.setmethodName(mName);
             EXP.setMaxTerm(k);
-            System.out.println("Query Expansion =>MAP@BM25 = "+ EVAL.map(bm25.getRankings(OUTLINE)));
-            System.out.println("Query Expansion =>RPREC@BM25 = "+ EVAL.rprec(bm25.getRankings(OUTLINE)));
+
+            Map<String,Map<String,Integer>> re = bm25.getRankings(OUTLINE);
+            System.out.println("Query Expansion =>MAP@BM25 = "+ EVAL.map(re));
+            System.out.println("Query Expansion =>RPREC@BM25 = "+ EVAL.rprec(re));
             System.out.println(" ");
             bm25.writeRankings(OUTLINE);
         }
@@ -85,8 +87,9 @@ public class QueryExpansion
                 String expanded= EXP.getTopKTermsPerQuery(InitSet.getValue(),OUTLINE.get(InitSet.getKey()));
                 ExpandedTerms.put(InitSet.getKey(),expanded);
             }
-            System.out.println("Query Expansion => MAP@PerQueryExpansion = "+ EVAL.map(bm25.getRankings(ExpandedTerms)));
-            System.out.println("Query Expansion => RPREC@PerQueryExpansion = "+ EVAL.rprec(bm25.getRankings(ExpandedTerms)));
+            Map<String,Map<String,Integer>> re = bm25.getRankings(ExpandedTerms);
+            System.out.println("Query Expansion => MAP@PerQueryExpansion = "+ EVAL.map(re));
+            System.out.println("Query Expansion => RPREC@PerQueryExpansion = "+ EVAL.rprec(re));
             System.out.println(" ");
             bm25.writeRankings(ExpandedTerms);
         }
@@ -115,9 +118,9 @@ public class QueryExpansion
                 String expanded= EXP.getTopKTermsPerQueryHighIDF(InitSet.getValue(),OUTLINE.get(InitSet.getKey()));
                 ExpandedTerms.put(InitSet.getKey(),expanded);
             }
-
-            System.out.println("Query Expansion => MAP@IDF = "+ EVAL.map(bm25.getRankings(ExpandedTerms)));
-            System.out.println("Query Expansion => RPREC@IDF = "+ EVAL.rprec(bm25.getRankings(ExpandedTerms)));
+            Map<String,Map<String,Integer>> re = bm25.getRankings(ExpandedTerms);
+            System.out.println("Query Expansion => MAP@IDF = "+ EVAL.map(re));
+            System.out.println("Query Expansion => RPREC@IDF = "+ EVAL.rprec(re));
             System.out.println(" ");
             bm25.writeRankings(ExpandedTerms);
         }
@@ -146,8 +149,10 @@ public class QueryExpansion
                 String expanded= EXP.getTopKTermsPerQueryHighDF(InitSet.getValue(),OUTLINE.get(InitSet.getKey()));
                 ExpandedTerms.put(InitSet.getKey(),expanded);
             }
-            System.out.println("Query Expansion => MAP@DF = "+ EVAL.map(bm25.getRankings(ExpandedTerms)));
-            System.out.println("Query Expansion => RPREC@DF = "+ EVAL.rprec(bm25.getRankings(ExpandedTerms)));
+
+            Map<String,Map<String,Integer>> re = bm25.getRankings(ExpandedTerms);
+            System.out.println("Query Expansion => MAP@DF = "+ EVAL.map(re));
+            System.out.println("Query Expansion => RPREC@DF = "+ EVAL.rprec(re));
             System.out.println(" ");
             bm25.writeRankings(ExpandedTerms);
 
@@ -185,8 +190,10 @@ public class QueryExpansion
                 String expanded= EXP.getTopKTermsIndexElimin(InitSet.getValue(),OUTLINE.get(InitSet.getKey()));
                 ExpandedTerms.put(InitSet.getKey(),expanded);
             }
-            System.out.println("Query Expansion => MAP@DF = "+ EVAL.map(bm25.getRankings(ExpandedTerms)));
-            System.out.println("Query Expansion => RPREC@DF = "+ EVAL.rprec(bm25.getRankings(ExpandedTerms)));
+
+            Map<String,Map<String,Integer>> re = bm25.getRankings(ExpandedTerms);
+            System.out.println("Query Expansion => MAP@IndexElimiation = "+ EVAL.map(re));
+            System.out.println("Query Expansion => RPREC@IndexElimination  = "+ EVAL.rprec(re));
             System.out.println(" ");
             bm25.writeRankings(ExpandedTerms);
             EXP.printMessage();
@@ -200,7 +207,7 @@ public class QueryExpansion
          */
         public void runPrfIndexElimination(String mName,int k)
         {
-            System.out.println("Called runPRFIndividualDF");
+            System.out.println("Called prfIndexElimination");
             bm25.setmethodName(mName);
             EXP.setMaxTerm(k);
             prfIndividualIndexElimination(k);
