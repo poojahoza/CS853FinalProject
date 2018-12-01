@@ -37,7 +37,7 @@ public class base extends Searcher {
     public base(String methodName) throws IOException{
         this();
         if(methodName.contains("Unigram")){
-           // searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(constants.DIRECTORY_NAME_WITH_ENTITY_FIELD))));
+           searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(constants.DIRECTORY_NAME_WITH_ENTITY_FIELD))));
             parser = new QueryParser("body", new StandardAnalyzer());
         }
 
