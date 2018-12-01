@@ -37,7 +37,7 @@ public class base extends Searcher {
     public base(String methodName) throws IOException{
         this();
         if(methodName.contains("Unigram")){
-            searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(constants.DIRECTORY_NAME_WITH_ENTITY_FIELD))));
+           // searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(constants.DIRECTORY_NAME_WITH_ENTITY_FIELD))));
             parser = new QueryParser("body", new StandardAnalyzer());
         }
 
@@ -234,6 +234,53 @@ public class base extends Searcher {
         }
     }
 
+    private void createbaseQuerydocPairScore(String queryId, String docId, Float score){
+
+        if(constants.baseQuerydocPairScore.containsKey(this.methodName)){
+            Map<String, Map<String, Float>> extract = constants.baseQuerydocPairScore.get(this.methodName);
+            if(extract.containsKey(queryId)){
+                Map<String, Float> query_extract = extract.get(queryId);
+                query_extract.put(docId, score);
+            }
+            else{
+                Map<String, Float> temp = new LinkedHashMap<>();
+                temp.put(docId, score);
+                extract.put(queryId,temp);
+            }
+        }
+        else{
+            Map<String, Map<String, Float>> query_temp = new LinkedHashMap<>();
+            Map<String, Float> doc_temp = new LinkedHashMap<>();
+            doc_temp.put(docId, score);
+            query_temp.put(queryId, doc_temp);
+            constants.baseQuerydocPairScore.put(this.methodName, query_temp);
+        }
+    }
+
+    private void createbaseQuerydocPairRank(String queryId, String docId, Integer Rank){
+
+        if(constants.baseQuerydocPairRank.containsKey(this.methodName)){
+            Map<String, Map<String, Integer>> extract = constants.baseQuerydocPairRank.get(this.methodName);
+            if(extract.containsKey(queryId)){
+                Map<String, Integer> query_extract = extract.get(queryId);
+                query_extract.put(docId, Rank);
+
+            }
+            else{
+                Map<String, Integer> temp = new LinkedHashMap<>();
+                temp.put(docId, Rank);
+                extract.put(queryId,temp);
+            }
+        }
+        else{
+            Map<String, Map<String, Integer>> query_temp = new LinkedHashMap<>();
+            Map<String, Integer> doc_temp = new LinkedHashMap<>();
+            doc_temp.put(docId, Rank);
+            query_temp.put(queryId, doc_temp);
+            constants.baseQuerydocPairRank.put(this.methodName, query_temp);
+        }
+    }
+
     private void createEntityQueryDocPair(String outer_key, String inner_key, String entities, Map<String, Map<String,String[]>> searcher_entitiesList)
     {
         String[] p_entities;
@@ -279,6 +326,7 @@ public class base extends Searcher {
 
             //Print out the results from the rank document
             String docScore = String.valueOf(scoringDoc.score);
+            Float score = scoringDoc.score;
             String paraId = rankedDoc.getField("id").stringValue();
             //System.out.println(rankedDoc.getField("entities"));
             String paraEntities = "";
@@ -290,6 +338,9 @@ public class base extends Searcher {
             rankings.add(queryId + " Q0 " + paraId + " " + paraRank + " " + docScore + " "+teamName + "-" + methodName);
             createRankingQueryDocPair(queryId, paraId, Integer.valueOf(paraRank));
             createEntityQueryDocPair(queryId, paraId, paraEntities, searcher_entitiesList);
+            createbaseQuerydocPairScore(queryId, paraId, score);
+            createbaseQuerydocPairRank(queryId, paraId, Integer.valueOf(paraRank));
+
         }
 
         return rankings;

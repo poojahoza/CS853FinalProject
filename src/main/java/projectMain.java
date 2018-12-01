@@ -52,13 +52,13 @@ public class projectMain
 
             constants.setBigramDirectory(System.getProperty("user.dir")+System.getProperty("file.separator")+"BigramIndexed_file");
 
-            constants.setWindowDirectory(System.getProperty("user.dir")+System.getProperty("file.separator")+"UnBigram_file");
+            constants.setWindowDirectory(System.getProperty("user.dir")+System.getProperty("file.separator")+"Window_file");
 
             constants.setOutlineCbor(args[1]);
             constants.setQrelPath(args[2]);
 
             //Create the new lucene Index
-            /*IndexBuilder defaultIndex = new IndexBuilder();
+           /* IndexBuilder defaultIndex = new IndexBuilder();
             defaultIndex.getIndexWriter();
 
             BigramIndexBuilder BigramIndex = new BigramIndexBuilder();
@@ -77,7 +77,7 @@ public class projectMain
             base BM25Searcher = new base("UnigramBM25");
             BM25Searcher.writeRankings(p);
 
-           EntitiesMethods entity_methods = new EntitiesMethods();
+            EntitiesMethods entity_methods = new EntitiesMethods();
             ranked_entities = entity_methods.getBM25entities(p);
             entity_methods.writeEntitiesToFile(ranked_entities, "output_BM25_Entites_Ranking.txt");
 
@@ -89,19 +89,19 @@ public class projectMain
 
             System.out.println("-----------------------------------------------------------------------------");
 
-            /*EntityIndexBuilder el = new EntityIndexBuilder();
-            el.getEntityIndexWriter();*/
+            EntityIndexBuilder el = new EntityIndexBuilder();
+            el.getEntityIndexWriter();
 
             ranked_entities.clear();
             ranked_entities = entity_methods.getBM25entitiesAsBody(p);
             entity_methods.writeEntitiesToFile(ranked_entities, "output_BM25_Entites_Body_Ranking.txt");
 
-            /*EntityIndexBuilderBigram elb = new EntityIndexBuilderBigram();
+            EntityIndexBuilderBigram elb = new EntityIndexBuilderBigram();
             elb.getEntityIndexWriter();
 
             ranked_entities.clear();
             ranked_entities = entity_methods.getBM25entitiesbigramAsBody(p);
-            entity_methods.writeEntitiesToFile(ranked_entities, "output_BM25_Bigram_Entites_Body_Ranking.txt");*/
+            entity_methods.writeEntitiesToFile(ranked_entities, "output_BM25_Bigram_Entites_Body_Ranking.txt");
 
 
 

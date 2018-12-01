@@ -17,6 +17,8 @@ public class constants
     public static Map<String, String> methodRunfile = new LinkedHashMap<>();
     public static Map<String, Map<String, Map<String, String[]>>> lmQueryDocPair = new LinkedHashMap<>();
     public static Map<String, Map<String, Map<String, Float>>> sdmQueryDocPair = new LinkedHashMap<>();
+    public static Map<String, Map<String, Map<String, Float>>> baseQuerydocPairScore = new LinkedHashMap<>();
+    public static Map<String, Map<String, Map<String, Integer>>> baseQuerydocPairRank = new LinkedHashMap<>();
     public static final int windowSize = 6;
 
 

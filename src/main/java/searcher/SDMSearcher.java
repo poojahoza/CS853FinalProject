@@ -22,21 +22,20 @@ public class SDMSearcher extends Searcher{
         output_file_name = "output_"+ methodName+"_ranking.txt";
     }
     public  void writeRankings(int variant) throws IOException {
-        Map<String,String> p = Util.readOutline(constants.OUTLINE_CBOR);
 
         switch (variant) {
             // Laplace smoothing
             case 1:
 
-                Map<String, Map<String, Float>> QDPULapace= Util.readRunFile2(constants.methodRunfile.get("UnigramLaplace"));
+                Map<String, Map<String, Float>> QDPULapace= constants.baseQuerydocPairScore.get("UnigramLaplace");
                 createQueryDocPair(QDPULapace);
 
 
-                Map<String, Map<String, Float>> QDPBLapace= Util.readRunFile2(constants.methodRunfile.get("BigramLaplace"));
+                Map<String, Map<String, Float>> QDPBLapace= constants.baseQuerydocPairScore.get("BigramLaplace");
                 createQueryDocPair(QDPBLapace);
 
 
-                Map<String, Map<String, Float>> QDPWLapace= Util.readRunFile2(constants.methodRunfile.get("WindowLaplace"));
+                Map<String, Map<String, Float>> QDPWLapace= constants.baseQuerydocPairScore.get("WindowLaplace");
                 createQueryDocPair(QDPWLapace);
                 reRank();
                 writeRanking();
@@ -47,15 +46,15 @@ public class SDMSearcher extends Searcher{
             // JM smoothing
             case 2:
 
-                Map<String, Map<String, Float>> QDPUJM= Util.readRunFile2(constants.methodRunfile.get("UnigramJM"));
+                Map<String, Map<String, Float>> QDPUJM= constants.baseQuerydocPairScore.get("UnigramJM");
                 createQueryDocPair(QDPUJM);
 
 
-                Map<String, Map<String, Float>> QDPBJM= Util.readRunFile2(constants.methodRunfile.get("BigramJM"));
+                Map<String, Map<String, Float>> QDPBJM= constants.baseQuerydocPairScore.get("BigramJM");
                 createQueryDocPair(QDPBJM);
 
 
-                Map<String, Map<String, Float>> QDPWJM= Util.readRunFile2(constants.methodRunfile.get("WindowJM"));
+                Map<String, Map<String, Float>> QDPWJM= constants.baseQuerydocPairScore.get("WindowJM");
                 createQueryDocPair(QDPWJM);
                 reRank();
                 writeRanking();
@@ -65,15 +64,15 @@ public class SDMSearcher extends Searcher{
              // Drichlet smoothing
             case 3:
 
-                Map<String, Map<String, Float>> QDPUDR= Util.readRunFile2(constants.methodRunfile.get("UnigramDrichlet"));
+                Map<String, Map<String, Float>> QDPUDR= constants.baseQuerydocPairScore.get("UnigramDrichlet");
                 createQueryDocPair(QDPUDR);
 
 
-                Map<String, Map<String, Float>> QDPBDR= Util.readRunFile2(constants.methodRunfile.get("BigramDrichlet"));
+                Map<String, Map<String, Float>> QDPBDR= constants.baseQuerydocPairScore.get("BigramDrichlet");
                 createQueryDocPair(QDPBDR);
 
 
-                Map<String, Map<String, Float>> QDPWDR= Util.readRunFile2(constants.methodRunfile.get("WindowDrichlet"));
+                Map<String, Map<String, Float>> QDPWDR= constants.baseQuerydocPairScore.get("WindowDrichlet");
                 createQueryDocPair(QDPWDR);
                 reRank();
                 writeRanking();
@@ -84,15 +83,15 @@ public class SDMSearcher extends Searcher{
             case 4:
 
 
-                Map<String, Map<String, Float>> QDPUBM25= Util.readRunFile2(constants.methodRunfile.get("BM25Searcher"));
+                Map<String, Map<String, Float>> QDPUBM25= constants.baseQuerydocPairScore.get("UnigramBM25");
                 createQueryDocPair(QDPUBM25);
 
 
-                Map<String, Map<String, Float>> QDPBBM25= Util.readRunFile2(constants.methodRunfile.get("BigramBM25"));
+                Map<String, Map<String, Float>> QDPBBM25= constants.baseQuerydocPairScore.get("BigramBM25");
                 createQueryDocPair(QDPBBM25);
 
 
-                Map<String, Map<String, Float>> QDPWBM25= Util.readRunFile2(constants.methodRunfile.get("WindowBM25"));
+                Map<String, Map<String, Float>> QDPWBM25= constants.baseQuerydocPairScore.get("WindowBM25");
                 createQueryDocPair(QDPWBM25);
                 reRank();
                 writeRanking();
@@ -102,15 +101,15 @@ public class SDMSearcher extends Searcher{
 
                 // Lapalce smoothing Inverse Ranking
             case 5:
-                Map<String, Map<String, Integer>> QDPULapaceRR= Util.readRunFile(constants.methodRunfile.get("UnigramLaplace"));
+                Map<String, Map<String, Integer>> QDPULapaceRR= constants.baseQuerydocPairRank.get("UnigramLaplace");
                 createQueryDocPair(createRevereseRank(QDPULapaceRR));
 
 
-                Map<String, Map<String, Integer>> QDPBLapaceRR= Util.readRunFile(constants.methodRunfile.get("BigramLaplace"));
+                Map<String, Map<String, Integer>> QDPBLapaceRR= constants.baseQuerydocPairRank.get("BigramLaplace");
                 createQueryDocPair(createRevereseRank(QDPBLapaceRR));
 
 
-                Map<String, Map<String, Integer>> QDPWLapaceRR= Util.readRunFile(constants.methodRunfile.get("WindowLaplace"));
+                Map<String, Map<String, Integer>> QDPWLapaceRR= constants.baseQuerydocPairRank.get("WindowLaplace");
                 createQueryDocPair(createRevereseRank(QDPWLapaceRR));
                 reRank();
                 writeRanking();
@@ -119,15 +118,15 @@ public class SDMSearcher extends Searcher{
                 break;
              // JM smoothing Inverse Ranking
             case 6:
-                Map<String, Map<String, Integer>> QDPUJMRR = Util.readRunFile(constants.methodRunfile.get("UnigramJM"));
+                Map<String, Map<String, Integer>> QDPUJMRR = constants.baseQuerydocPairRank.get("UnigramJM");
                 createQueryDocPair(createRevereseRank(QDPUJMRR));
 
 
-                Map<String, Map<String, Integer>> QDPBJMRR = Util.readRunFile(constants.methodRunfile.get("BigramJM"));
+                Map<String, Map<String, Integer>> QDPBJMRR = constants.baseQuerydocPairRank.get("BigramJM");
                 createQueryDocPair(createRevereseRank(QDPBJMRR));
 
 
-                Map<String, Map<String, Integer>> QDPWJMRR = Util.readRunFile(constants.methodRunfile.get("WindowJM"));
+                Map<String, Map<String, Integer>> QDPWJMRR = constants.baseQuerydocPairRank.get("WindowJM");
                 createQueryDocPair(createRevereseRank(QDPWJMRR));
                 reRank();
                 writeRanking();
@@ -136,15 +135,15 @@ public class SDMSearcher extends Searcher{
 
              // Drichlet smoothing reveres Rank
             case 7:
-                Map<String, Map<String, Integer>> QDPUDRRR= Util.readRunFile(constants.methodRunfile.get("UnigramDrichlet"));
+                Map<String, Map<String, Integer>> QDPUDRRR= constants.baseQuerydocPairRank.get("UnigramDrichlet");
                 createQueryDocPair(createRevereseRank(QDPUDRRR));
 
 
-                Map<String, Map<String, Integer>> QDPBDRRR= Util.readRunFile(constants.methodRunfile.get("BigramDrichlet"));
+                Map<String, Map<String, Integer>> QDPBDRRR= constants.baseQuerydocPairRank.get("BigramDrichlet");
                 createQueryDocPair(createRevereseRank(QDPBDRRR));
 
 
-                Map<String, Map<String, Integer>> QDPWDRRR= Util.readRunFile(constants.methodRunfile.get("WindowDrichlet"));
+                Map<String, Map<String, Integer>> QDPWDRRR= constants.baseQuerydocPairRank.get("WindowDrichlet");
                 createQueryDocPair(createRevereseRank(QDPWDRRR));
                 reRank();
                 writeRanking();
@@ -153,15 +152,15 @@ public class SDMSearcher extends Searcher{
 
             // BM25 reverse Rank
             case 8:
-                Map<String, Map<String, Integer>> QDPUBM25RR= Util.readRunFile(constants.methodRunfile.get("BM25Searcher"));
+                Map<String, Map<String, Integer>> QDPUBM25RR= constants.baseQuerydocPairRank.get("UnigramBM25");
                 createQueryDocPair(createRevereseRank(QDPUBM25RR));
 
 
-                Map<String, Map<String, Integer>> QDPBBM25RR= Util.readRunFile(constants.methodRunfile.get("BigramBM25"));
+                Map<String, Map<String, Integer>> QDPBBM25RR= constants.baseQuerydocPairRank.get("BigramBM25");
                 createQueryDocPair(createRevereseRank(QDPBBM25RR));
 
 
-                Map<String, Map<String, Integer>> QDPWBM25RR= Util.readRunFile(constants.methodRunfile.get("WindowBM25"));
+                Map<String, Map<String, Integer>> QDPWBM25RR= constants.baseQuerydocPairRank.get("WindowBM25");
                 createQueryDocPair(createRevereseRank(QDPWBM25RR));
                 reRank();
                 writeRanking();
@@ -207,7 +206,7 @@ public class SDMSearcher extends Searcher{
             for(Map.Entry<String, Float> m : temp.entrySet())
                 createRankingpair(queryId, m.getKey(), m.getValue());
         }
-        System.out.println(query_doc_pair.entrySet().size());
+
     }
     private void createRankingpair(String queryId, String docId, Float score){
 
