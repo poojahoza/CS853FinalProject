@@ -1,4 +1,5 @@
 package main.java;
+
 import java.io.IOException;
 
 import main.java.indexer.BigramIndexBuilder;
@@ -9,6 +10,8 @@ import main.java.indexer.EntityIndexBuilderBigram;
 import main.java.searcher.SDMSearcher;
 import main.java.searcher.base;
 import main.java.searcher.Searcher;
+
+import main.java.queryexpansion.QueryExpansion;
 import main.java.util.constants;
 import main.java.util.Util;
 import java.util.Map;
@@ -19,9 +22,8 @@ public class projectMain
 {
     private static void  usage()
     {
-        System.out.println("args[0] --> Paragraph CBOR Absolute Path");
-        System.out.println("args[1] --> Outlines CBOR Absolute Path");
-        System.out.println("args[2] --> Article  Qrel Absolute Path");
+        System.out.println("args[0] --> Outlines CBOR Absolute Path");
+        System.out.println("args[1] --> Article  Qrel Absolute Path");
         System.exit(-1 );
     }
     public static void main(String[] args) throws IOException
@@ -30,21 +32,26 @@ public class projectMain
         String entity_dest;
         String entity_bigram_dest;
         String entity_field_dest;
+        String query_exp_dest;
         Map<String, Map<String, Integer>> ranked_entities;
 
-        if( args.length < 3 )
+        if( args.length < 2 )
         {
             usage();
         }
-
         else
         {
-            dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
+            //dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
+            query_exp_dest="//home//team3//indexed_file";
+            constants.setDirectoryName(query_exp_dest);
+
+            //dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
             entity_dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"entity_indexed_file";
             entity_bigram_dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"entity_bigram_indexed_file";
             entity_field_dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"entity_field_indexed_file";
-            constants.setIndexFileName(args[0]);
-            constants.setDirectoryName(dest);
+            //constants.setIndexFileName(args[0]);
+            //constants.setDirectoryName(query_exp_dest);
+
             constants.setEntityDirectoryName(entity_dest);
             constants.setEntityBigramDirectoryName(entity_bigram_dest);
             constants.setDirectoryNameWithEntityField(entity_field_dest);
@@ -54,8 +61,9 @@ public class projectMain
 
             constants.setWindowDirectory(System.getProperty("user.dir")+System.getProperty("file.separator")+"Window_file");
 
-            constants.setOutlineCbor(args[1]);
-            constants.setQrelPath(args[2]);
+
+            constants.setOutlineCbor(args[0]);
+            constants.setQrelPath(args[1]);
 
             //Create the new lucene Index
            /* IndexBuilder defaultIndex = new IndexBuilder();
@@ -72,6 +80,15 @@ public class projectMain
 
             Map<String,String> p = Util.readOutline(constants.OUTLINE_CBOR);
 
+            QueryExpansion q= new QueryExpansion(p);
+            q.runBM25("BM25",10);
+            q.runPRF("PRF",10);
+            q.runPrfIndividual("PRF_PER_QUERY_TERM",10);
+            q.runPrfIndividualIDF("PRF_IDF",100);
+            q.runPrfIndividualDF("PRF_DF",100);
+            q.runPrfIndexElimination("Index_ELIM",100);
+
+
             /*Searcher BM25Searcher = new Searcher();
             BM25Searcher.writeRankings(p);*/
             base BM25Searcher = new base("UnigramBM25");
@@ -87,6 +104,7 @@ public class projectMain
             constants.methodRunfile.put("BM25Searcher" , BM25Searcher.getOutputFileName());
 
             System.out.println("-----------------------------------------------------------------------------");
+
 
             /*EntityIndexBuilder el = new EntityIndexBuilder();
             el.getEntityIndexWriter();*/
@@ -231,7 +249,7 @@ public class projectMain
 
             ranked_entities =  entity_methods.getSDMBM25etentities();
             entity_methods.writeEntitiesToFile(ranked_entities, "output_SDM_BM25_Entites_Ranking.txt");
-        }
 
+        }
     }
 }
