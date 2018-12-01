@@ -17,6 +17,7 @@ import static java.util.stream.Collectors.toMap;
 public class SDMSearcher extends Searcher{
     private Map<String, Map <String, Map<String, Float>>> query_doc_pair = new LinkedHashMap<>();
     private Map<String, Map <String, Map<String, Float>>> query_ordered_doc_pair = new LinkedHashMap<>();
+    private int j = 100;
     public SDMSearcher(String methodName) throws IOException{
         this.methodName = methodName;
         output_file_name = "output_"+ methodName+"_ranking.txt";
@@ -176,26 +177,44 @@ public class SDMSearcher extends Searcher{
 
     private Map<String, Map<String, Float>> createRevereseRank(Map<String, Map<String, Integer>> map){
 
+
         Map<String, Map<String, Float>> reverseRankMap = new LinkedHashMap<>();
-        Map<String, Float> temp = new LinkedHashMap<>();
         float size = 0;
         for(Map.Entry<String, Map<String, Integer>> outerMap : map.entrySet()){
             Map<String, Integer> InnerMap = outerMap.getValue();
             String queryId = outerMap.getKey();
+            System.out.println(queryId);
             size = InnerMap.size();
+
             for(Map.Entry<String, Integer> innermap: InnerMap.entrySet()){
 
-                String docId = innermap.getKey();
-                float rank = (float)innermap.getValue();
 
-                float reverseRank = (size - rank) / size;
+                if(reverseRankMap.containsKey(queryId)) {
+                    Map<String, Float>  extract = reverseRankMap.get(queryId);
+                    String docId = innermap.getKey();
+                    Integer rank = innermap.getValue();
 
-                temp.put(docId, reverseRank);
+                    float reverseRank = ((size - rank) + 1) / size;
+
+                    //System.out.println(size + " " +reverseRank+ " " + docId);
+
+                    extract.put(docId, reverseRank);
+                }
+                else {
+
+                    String docId = innermap.getKey();
+                    Integer rank = innermap.getValue();
+                    float reverseRank = ((size - rank) + 1) / size;
+                    Map<String, Float> temp = new LinkedHashMap<>();
+                    temp.put(docId, reverseRank);
+                    reverseRankMap.put(queryId, temp);
+                }
+
             }
-            reverseRankMap.put(queryId, temp);
-        }
 
+        }
         return reverseRankMap;
+
     }
 
     private void createQueryDocPair( Map<String, Map<String, Float>> map){
@@ -210,7 +229,6 @@ public class SDMSearcher extends Searcher{
     }
     private void createRankingpair(String queryId, String docId, Float score){
 
-
         if(query_doc_pair.containsKey(this.methodName)) {
             Map<String, Map<String, Float>> outer = query_doc_pair.get(this.methodName);
             if (outer.containsKey(queryId)){
@@ -219,19 +237,18 @@ public class SDMSearcher extends Searcher{
                 if (inner.containsKey(docId)) {
                     Float docScore = inner.get(docId) + score;
                     inner.put(docId, docScore);
-                    outer.put(queryId, inner);
-                    query_doc_pair.put(this.methodName, outer);
 
                 } else {
                     inner.put(docId, score);
                     outer.put(queryId, inner);
-                    query_doc_pair.put(this.methodName,outer);
+
                 }
             } else {
                 Map<String, Float> inner = new LinkedHashMap<>();
                 inner.put(docId, score);
                 outer.put(queryId, inner);
             }
+
         }
         else{
             Map<String, Map<String, Float>> outer = new LinkedHashMap<>();
@@ -349,7 +366,5 @@ public class SDMSearcher extends Searcher{
     public String getMethodName(){
         return this.methodName;
     }
-    public void print(){
-        System.out.println(query_ordered_doc_pair);
-    }
+
     }

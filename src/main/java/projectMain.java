@@ -77,22 +77,21 @@ public class projectMain
             base BM25Searcher = new base("UnigramBM25");
             BM25Searcher.writeRankings(p);
 
-            EntitiesMethods entity_methods = new EntitiesMethods();
+           /* EntitiesMethods entity_methods = new EntitiesMethods();
             ranked_entities = entity_methods.getBM25entities(p);
             entity_methods.writeEntitiesToFile(ranked_entities, "output_BM25_Entites_Ranking.txt");
-
-            ranked_entities.clear();
+*/
+            /*ranked_entities.clear();
             ranked_entities = entity_methods.getBM25QueryExpansionEntities(p);
-            entity_methods.writeEntitiesToFile(ranked_entities, "output_BM25_Expanded_Entites_Ranking.txt");
-
+*/
             constants.methodRunfile.put("BM25Searcher" , BM25Searcher.getOutputFileName());
 
             System.out.println("-----------------------------------------------------------------------------");
 
-            EntityIndexBuilder el = new EntityIndexBuilder();
-            el.getEntityIndexWriter();
+           /* EntityIndexBuilder el = new EntityIndexBuilder();
+            el.getEntityIndexWriter();*/
 
-            ranked_entities.clear();
+           /* ranked_entities.clear();
             ranked_entities = entity_methods.getBM25entitiesAsBody(p);
             entity_methods.writeEntitiesToFile(ranked_entities, "output_BM25_Entites_Body_Ranking.txt");
 
@@ -101,12 +100,12 @@ public class projectMain
 
             ranked_entities.clear();
             ranked_entities = entity_methods.getBM25entitiesbigramAsBody(p);
-            entity_methods.writeEntitiesToFile(ranked_entities, "output_BM25_Bigram_Entites_Body_Ranking.txt");
+            entity_methods.writeEntitiesToFile(ranked_entities, "output_BM25_Bigram_Entites_Body_Ranking.txt");*/
 
 
 
 
-            base uniLapalce = new base("UnigramLaplace");
+       /*     base uniLapalce = new base("UnigramLaplace");
             uniLapalce.setUnigramLaplace();
             uniLapalce.writeRankings(p);
 
@@ -127,7 +126,7 @@ public class projectMain
             windowLaplace.writeRankings(p);
 
             constants.methodRunfile.put("WindowLaplace", windowLaplace.getOutputFileName());
-
+*/
 
 
             base uniJM = new base("UnigramJM");
@@ -152,7 +151,7 @@ public class projectMain
 
 
 
-            base uniDrichlet = new base("UnigramDrichlet");
+           /* base uniDrichlet = new base("UnigramDrichlet");
             uniDrichlet.setUnigramDirichlet();
             uniDrichlet.writeRankings(p);
 
@@ -174,10 +173,10 @@ public class projectMain
             windowDrichlet.writeRankings(p);
 
             constants.methodRunfile.put("WindowDrichlet", windowDrichlet.getOutputFileName());
+*/
 
 
-
-            base BiBM25 = new base("BigramBM25");
+          /*  base BiBM25 = new base("BigramBM25");
             BiBM25.setBigramBM25();
             BiBM25.writeRankings(p);
 
@@ -191,37 +190,37 @@ public class projectMain
 
             SDMSearcher SDM_Laplace = new SDMSearcher("SDM_with_Laplace_smoothing");
             SDM_Laplace.setLaplaceSDM();
-            constants.sdmQueryDocPair.put(SDM_Laplace.getMethodName(), SDM_Laplace.get_query_doc_pair());
+            constants.sdmQueryDocPair.put(SDM_Laplace.getMethodName(), SDM_Laplace.get_query_doc_pair());*/
 
-            SDMSearcher SDM_JM = new SDMSearcher("SDM_with_JM_smoothing");
+            /*SDMSearcher SDM_JM = new SDMSearcher("SDM_with_JM_smoothing");
             SDM_JM.setJMSDM();
-            constants.sdmQueryDocPair.put(SDM_JM.getMethodName(), SDM_JM.get_query_doc_pair());
+            constants.sdmQueryDocPair.put(SDM_JM.getMethodName(), SDM_JM.get_query_doc_pair());*/
 
-            SDMSearcher SDM_Drichlet = new SDMSearcher("SDM_with_Drichlet_smoothing");
+           /* SDMSearcher SDM_Drichlet = new SDMSearcher("SDM_with_Drichlet_smoothing");
             SDM_Drichlet.setDrichletSDM();
-            constants.sdmQueryDocPair.put(SDM_Drichlet.getMethodName(), SDM_Drichlet.get_query_doc_pair());
+            constants.sdmQueryDocPair.put(SDM_Drichlet.getMethodName(), SDM_Drichlet.get_query_doc_pair());*/
 
-            SDMSearcher SDM_BM25 = new SDMSearcher("SDM_with_BM25");
+            /*SDMSearcher SDM_BM25 = new SDMSearcher("SDM_with_BM25");
             SDM_BM25.setBM25SDM();
             constants.sdmQueryDocPair.put(SDM_BM25.getMethodName(), SDM_BM25.get_query_doc_pair());
 
             SDMSearcher SDM_LaplaceRR = new SDMSearcher("SDM_with_Laplace_smoothing_reverse_rank");
             SDM_LaplaceRR.setLaplaceSDMRR();
-            constants.sdmQueryDocPair.put(SDM_LaplaceRR.getMethodName(), SDM_LaplaceRR.get_query_doc_pair());
+            constants.sdmQueryDocPair.put(SDM_LaplaceRR.getMethodName(), SDM_LaplaceRR.get_query_doc_pair());*/
 
             SDMSearcher SDM_JMRR = new SDMSearcher("SDM_with_JM_smoothing_reverse_rank");
             SDM_JMRR.setJMSDMRR();
             constants.sdmQueryDocPair.put(SDM_JMRR.getMethodName(), SDM_JMRR.get_query_doc_pair());
 
-            SDMSearcher SDM_DrichletRR = new SDMSearcher("SDM_with_Drichlet_smoothing_reverse_rank");
+           /* SDMSearcher SDM_DrichletRR = new SDMSearcher("SDM_with_Drichlet_smoothing_reverse_rank");
             SDM_DrichletRR.setDrichletSDMRR();
-            constants.sdmQueryDocPair.put(SDM_DrichletRR.getMethodName(), SDM_DrichletRR.get_query_doc_pair());
-
-            SDMSearcher SDM_BM25RR = new SDMSearcher("SDM_with_BM25_reverse_rank");
+            constants.sdmQueryDocPair.put(SDM_DrichletRR.getMethodName(), SDM_DrichletRR.get_query_doc_pair());*/
+/*
+           SDMSearcher SDM_BM25RR = new SDMSearcher("SDM_with_BM25_reverse_rank");
             SDM_BM25RR.setBM25SDMRR();
-            constants.sdmQueryDocPair.put(SDM_BM25RR.getMethodName(), SDM_BM25RR.get_query_doc_pair());
+            constants.sdmQueryDocPair.put(SDM_BM25RR.getMethodName(), SDM_BM25RR.get_query_doc_pair());*/
 
-            ranked_entities =  entity_methods.getSDMLaPlaceentities();
+           /* ranked_entities =  entity_methods.getSDMLaPlaceentities();
             entity_methods.writeEntitiesToFile(ranked_entities, "output_SDM_LaPlace_Entites_Ranking.txt");
 
             ranked_entities =  entity_methods.getSDMJMentities();
@@ -231,7 +230,7 @@ public class projectMain
             entity_methods.writeEntitiesToFile(ranked_entities, "output_SDM_Dirchlet_Entites_Ranking.txt");
 
             ranked_entities =  entity_methods.getSDMBM25etentities();
-            entity_methods.writeEntitiesToFile(ranked_entities, "output_SDM_BM25_Entites_Ranking.txt");
+            entity_methods.writeEntitiesToFile(ranked_entities, "output_SDM_BM25_Entites_Ranking.txt");*/
         }
 
     }
