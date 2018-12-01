@@ -14,6 +14,7 @@ public class constants
 
     public static String OUTLINE_CBOR="";
     public static String QREL_PATH="";
+    public static String QREL_OUTPUT_PATH="";
 
     public static Map<String, Map<String,Integer>> queryDocPairRead;
     public static void setIndexFileName(String s)
@@ -29,5 +30,6 @@ public class constants
         OUTLINE_CBOR = d;
     }
     public static void setQrelPath(String d){ QREL_PATH= d;}
-
+    public static void setQrelOutputPath(String d){ QREL_OUTPUT_PATH= d;}
+    
 }
