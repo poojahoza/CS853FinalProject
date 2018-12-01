@@ -48,7 +48,7 @@ public class projectMain
             constants.setEntityDirectoryName(entity_dest);
             constants.setEntityBigramDirectoryName(entity_bigram_dest);
             constants.setDirectoryNameWithEntityField(entity_field_dest);
-            constants.setDirectoryName(System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file");
+            //constants.setDirectoryName(System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file");
 
             constants.setBigramDirectory(System.getProperty("user.dir")+System.getProperty("file.separator")+"BigramIndexed_file");
 
@@ -88,19 +88,19 @@ public class projectMain
 
             System.out.println("-----------------------------------------------------------------------------");
 
-            EntityIndexBuilder el = new EntityIndexBuilder();
-            el.getEntityIndexWriter();
+            /*EntityIndexBuilder el = new EntityIndexBuilder();
+            el.getEntityIndexWriter();*/
 
             ranked_entities.clear();
             ranked_entities = entity_methods.getBM25entitiesAsBody(p);
             entity_methods.writeEntitiesToFile(ranked_entities, "output_BM25_Entites_Body_Ranking.txt");
 
-            EntityIndexBuilderBigram elb = new EntityIndexBuilderBigram();
+            /*EntityIndexBuilderBigram elb = new EntityIndexBuilderBigram();
             elb.getEntityIndexWriter();
 
             ranked_entities.clear();
             ranked_entities = entity_methods.getBM25entitiesbigramAsBody(p);
-            entity_methods.writeEntitiesToFile(ranked_entities, "output_BM25_Bigram_Entites_Body_Ranking.txt");
+            entity_methods.writeEntitiesToFile(ranked_entities, "output_BM25_Bigram_Entites_Body_Ranking.txt");*/
 
 
 
