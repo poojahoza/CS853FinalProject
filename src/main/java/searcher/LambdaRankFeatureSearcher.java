@@ -106,6 +106,7 @@ public class LambdaRankFeatureSearcher extends Searcher{
 	     protected float score(BasicStats stats, float freq, float docLen)
 	     {
 	         float IDF =(float) Math.log10(((float) stats.getNumberOfDocuments()/ (float) stats.getDocFreq()));
+	         
 	         return IDF;
 	     }
 	

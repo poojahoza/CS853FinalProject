@@ -126,17 +126,17 @@ public class LambdaRank {
 
         //create Ranking pair for TFIdf : bnn
 
-        LambdaRankFeatureSearcher BNN = new LambdaRankFeatureSearcher("IDF");
-        lambdaTF.setIDF();
-        BNN.writeRankings(p);
+        LambdaRankFeatureSearcher lambdaIDF = new LambdaRankFeatureSearcher("IDF");
+        lambdaIDF.setIDF();
+        lambdaIDF.writeRankings(p);
 
         callcreateRankingPair("IDF");
 
         // create Ranking pair fot Unigram Language model: Laplace
 
-        LambdaRankFeatureSearcher laplace = new LambdaRankFeatureSearcher("DocLen");
-        laplace.setDocLen();
-        laplace.writeRankings(p);
+        LambdaRankFeatureSearcher lambdaDoclen = new LambdaRankFeatureSearcher("DocLen");
+        lambdaDoclen.setDocLen();
+        lambdaDoclen.writeRankings(p);
 
         callcreateRankingPair("DocLen");
 
@@ -214,20 +214,14 @@ public class LambdaRank {
     private String getRankingFunctionCase(String rankingFunction) {
     	String s = null;
     	switch(rankingFunction){
-    		case "LNC":
+    		case "TF":
     				s = "1";
     				break;
-    		case "BNN":	
+    		case "IDF":	
     			s = "2";
 				break;
-    		case "laplace":	
+    		case "DocLen":	
     			s = "3";
-				break;
-    		case "JMSmoothing":	
-    			s = "4";
-				break;
-    		case "DirichletSmoothing":	
-    			s = "5";
 				break;
     	}
     	return s;
