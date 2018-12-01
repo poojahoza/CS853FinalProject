@@ -183,7 +183,6 @@ public class SDMSearcher extends Searcher{
         for(Map.Entry<String, Map<String, Integer>> outerMap : map.entrySet()){
             Map<String, Integer> InnerMap = outerMap.getValue();
             String queryId = outerMap.getKey();
-            System.out.println(queryId);
             size = InnerMap.size();
 
             for(Map.Entry<String, Integer> innermap: InnerMap.entrySet()){
