@@ -18,7 +18,7 @@ public class projectMain
     }
     public static void main(String[] args) throws IOException
     {
-        String dest;
+        String query_exp_dest;
         if( args.length < 2 )
         {
             usage();
@@ -26,8 +26,8 @@ public class projectMain
         else
         {
             //dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
-            dest="//home//team3//indexed_file";
-            constants.setDirectoryName(dest);
+            query_exp_dest="//home//team3//indexed_file";
+            constants.setDirectoryName(query_exp_dest);
 
             constants.setOutlineCbor(args[0]);
             constants.setQrelPath(args[1]);
