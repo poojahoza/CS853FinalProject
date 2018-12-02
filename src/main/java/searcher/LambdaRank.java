@@ -12,14 +12,11 @@ import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-//import main.java.lucenerankingmodels.TFIDFSearcher;
 import main.java.util.Util;
 import main.java.util.constants;
 
 public class LambdaRank {
 
-	//Old: Map<Ranking Function, query, doc, vector and ranking float
-	//New: Map<Query Function, doc, ranking, vector and ranking float
     private Map<String, Map<String, Map<String, float[]>>> ranking_pairs = new LinkedHashMap<String, Map<String, Map<String, float[]>>>();
     private Map<String,Map<String,Integer>> qrel_data;
     private Map<String, Float> QIDToFloat;
@@ -53,7 +50,7 @@ public class LambdaRank {
     private int getQrelRelevancy(String query_id, String doc_id){
         if(qrel_data.containsKey(query_id)){
             Map<String,Integer> temp = qrel_data.get(query_id);
-            //System.out.println("Qrel Data: " + temp);
+
             if(temp.containsKey(doc_id)){
                 return temp.get(doc_id);
             }
@@ -75,37 +72,44 @@ public class LambdaRank {
     	   if(ranking_pairs.containsKey(query_key))// query_key
            {
                Map<String, Map<String, float[]>> extract = ranking_pairs.get(query_key); //query_key
+               
                if(extract.containsKey(doc_id)){ //function_key //doc_id
+            	   
                    Map<String, float[]> function_extract = extract.get(doc_id);//function_key //doc_id
+                   
                    if(!function_extract.containsKey(function_key)) { //function_key
-                       //Map<String, float[]> temp = new LinkedHashMap<String, float[]>();
-                       function_extract.put(function_key, rank); //function_key
-                     //  System.out.println("first section adding: " + function_key);
-                       extract.put(doc_id, function_extract);//function_key //doc_id
+                	   
+                       function_extract.put(function_key, rank); 
+                       extract.put(doc_id, function_extract);
+                       
                        ranking_pairs.put(query_key, extract);
+                       
                    }else {
                 	   System.out.println("Error");
                    }
                }
                else{
-                   //Map<String, Map<String, float[]>> query_temp = new LinkedHashMap<String, Map<String, float[]>>();
+                   
                    Map<String, float[]> function_temp = new LinkedHashMap<String, float[]>();
-                  // System.out.println("Middle section adding: " + function_key);
-                   function_temp.put(function_key, rank);//function_key and function_temp
-                   extract.put(doc_id, function_temp);//function_key //doc_id and function_temp
-                   //extract.put(function_key, query_temp);
+                  
+                   function_temp.put(function_key, rank);
+                   extract.put(doc_id, function_temp);
+
                    ranking_pairs.put(query_key, extract);
                }
 
            }
            else
            {
+        	   
                Map<String, Map<String, float[]>> doc_temp = new LinkedHashMap<String, Map<String, float[]>>();
-               Map<String, float[]> function_temp = new LinkedHashMap<String, float[]>(); // function_temp
-               //System.out.println("Last section adding: " + function_key);
-               function_temp.put(function_key, rank);//function_temp function_key
-               doc_temp.put(doc_id, function_temp);//function_key // doc_id doc_temp
-               ranking_pairs.put(query_key, doc_temp);//query_key //doc_temp
+               Map<String, float[]> function_temp = new LinkedHashMap<String, float[]>();
+
+               function_temp.put(function_key, rank);
+               doc_temp.put(doc_id, function_temp);
+               
+               ranking_pairs.put(query_key, doc_temp);
+               
            }
     }
 
@@ -116,7 +120,7 @@ public class LambdaRank {
     private void getRankings() throws IOException {
         Map<String,String> p = Util.readOutline(constants.OUTLINE_CBOR);
 
-        // create Ranking pair for TFIDF : LNC
+        // Ranking Pair for Term Frequency
 
         LambdaRankFeatureSearcher lambdaTF = new LambdaRankFeatureSearcher("TF");
         lambdaTF.setTF();
@@ -124,7 +128,7 @@ public class LambdaRank {
 
         callcreateRankingPair("TF");
 
-        //create Ranking pair for TFIdf : bnn
+        //Ranking pair for IDF
 
         LambdaRankFeatureSearcher lambdaIDF = new LambdaRankFeatureSearcher("IDF");
         lambdaIDF.setIDF();
@@ -132,7 +136,7 @@ public class LambdaRank {
 
         callcreateRankingPair("IDF");
 
-        // create Ranking pair fot Unigram Language model: Laplace
+        //Ranking pair for document length
 
         LambdaRankFeatureSearcher lambdaDoclen = new LambdaRankFeatureSearcher("DocLen");
         lambdaDoclen.setDocLen();
@@ -161,7 +165,11 @@ public class LambdaRank {
         }
     }
     
-    
+    /**
+     * Produces a ranking document using the cbor input
+     * @param fileName takes in a cbor file
+     * @throws IOException
+     */
     private void writeRankingDoc(String fileName) throws IOException {
       Path path = Paths.get(fileName);
       
@@ -211,15 +219,21 @@ public class LambdaRank {
       }
     }
     
+    //Ranking functions to print to feature doc.
     private String getRankingFunctionCase(String rankingFunction) {
     	String s = null;
     	switch(rankingFunction){
+    	
+    	//Term Frequency
     		case "TF":
     				s = "1";
     				break;
+    	//Inverse Document Frequency
     		case "IDF":	
     			s = "2";
 				break;
+		
+	    //Document Length
     		case "DocLen":	
     			s = "3";
 				break;
@@ -227,9 +241,13 @@ public class LambdaRank {
     	return s;
     }
     
+    //Generate a map based on a generated float and the QID
     private void createQIDMapToFloat() {
     	Map<String, Float> qidToFloat = new LinkedHashMap<String,Float>(); 
+    	
     	System.out.println("Entering QID");
+    	
+    	//Float id is generated based on ranking pair
     	Float f =  0.0f;
     	for(String qid: ranking_pairs.keySet()) {
     		f = f + 1.0f;
@@ -239,29 +257,40 @@ public class LambdaRank {
     	System.out.println(this.QIDToFloat);
     }
     
-    
+    /**
+     * Produces a usable Qrel formatted file based on the original query id's present in the training cbor.
+     * The output file modifies the query id to match the updated ranking file qid so that it is readable by ranklib
+     */
     public void rewriteQrel() {
+    	
     		System.out.println("Rewriting Qrel");
+    		
 	    	 BufferedReader file;
 	    	 String inputStr = null;
+	    	 
+	    	 //Take in the qrel file
 			try {
 				file = new BufferedReader(new FileReader(constants.QREL_PATH));
 		
-	         String line;
-	         StringBuffer inputBuffer = new StringBuffer();
+		         String line;
+		         StringBuffer inputBuffer = new StringBuffer();
 	         
+	         //Read in the qrel into a string file
 	         while ((line = file.readLine()) != null) {
 	             inputBuffer.append(line);
 	             inputBuffer.append('\n');
 	         }
+	         
 	         inputStr = inputBuffer.toString();
-    	
 	         file.close();
+	         
 			} catch (IOException ioe) {
-				// TODO Auto-generated catch block
+				
+				//In case of any io issues
 				System.out.println("Issue!");
 			}
 			
+			//Process each qid based on the ranking document and the randomly generated ids for the queries
 			for(String qid: ranking_pairs.keySet()) {
 				System.out.println("Rewriting Qrel");
 				inputStr = inputStr.replace(qid, String.valueOf(QIDToFloat.get(qid)));
@@ -269,16 +298,17 @@ public class LambdaRank {
 	         
 			System.out.println(inputStr);
 			try {
+				
 		    	  FileOutputStream fileOut = new FileOutputStream(constants.QREL_OUTPUT_PATH);
 		          fileOut.write(inputStr.getBytes());
 		          fileOut.close();
+		          
 		    } catch (IOException ioe) {
-				// TODO Auto-generated catch block
+		    	
+				//In case of any io issues
 				System.out.println("Issue!");
 			}
 
     }
     
 }
-
-

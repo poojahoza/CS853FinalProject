@@ -31,7 +31,7 @@ public class projectMain
         	/*dest = "C:\\Users\\VaughanCoder\\GitWorkspace\\CS853Docs";
             constants.setDirectoryName(dest);
 
-            constants.setOutlineCbor(args[0]);
+            /*constants.setOutlineCbor(args[0]);
             constants.setQrelPath(args[1]);
             Map<String,String> p = Util.readOutline(constants.OUTLINE_CBOR);*/
 
@@ -43,16 +43,16 @@ public class projectMain
             q.runPrfIndividualIDF("PRF_IDF",100);
             q.runPrfIndividualDF("PRF_DF",10);*/
             
-        	constants.setIndexFileName(args[0]);
+        	//constants.setIndexFileName(args[0]);
 
             constants.setOutlineCbor(args[1]);
-            System.out.println(constants.OUTLINE_CBOR);
+      
             constants.setQrelPath(args[2]);
             constants.setQrelOutputPath(args[3]);
 			Map<String,Map<String,Integer>> qrel = Util.createQrelMap(constants.QREL_PATH);
 
-			IndexBuilder Index1 = new IndexBuilder();
-			Index1.getIndexWriter();
+			//IndexBuilder Index1 = new IndexBuilder();
+			//Index1.getIndexWriter();
 
 			//create the new lucene Index for bigram
 		   /* LuceneIndexer Index2 = new LuceneIndexer();
