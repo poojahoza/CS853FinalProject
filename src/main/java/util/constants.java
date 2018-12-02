@@ -13,6 +13,7 @@ public class constants
     //public final static String Prop = "//home//ar1184//CS853FinalProject//src//main//java//config.properties";
 
     public static String OUTLINE_CBOR="";
+    public static String TEST_OUTLINE_CBOR="";
     public static String QREL_PATH="";
     public static String QREL_OUTPUT_PATH="";
 
@@ -29,6 +30,11 @@ public class constants
     {
         OUTLINE_CBOR = d;
     }
+    public static void setTestOutlineCbor(String d)
+    {
+    	TEST_OUTLINE_CBOR = d;
+    }
+    
     public static void setQrelPath(String d){ QREL_PATH= d;}
     public static void setQrelOutputPath(String d){ QREL_OUTPUT_PATH= d;}
     

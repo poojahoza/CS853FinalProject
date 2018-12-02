@@ -35,10 +35,14 @@ public class LambdaRank {
      * @throws IOException
      */
     public void generateRanklibFile() throws IOException{
-        getRankings();
+        getRankings(true);
         this.createQIDMapToFloat();
         rewriteQrel();
         writeRankingDoc("rankingDoc.txt");
+        ranking_pairs = new LinkedHashMap<String, Map<String, Map<String, float[]>>>();
+        getRankings(false);
+        this.createQIDMapToFloat();
+        writeRankingDoc("testDoc.txt");
     }
     
     /**
@@ -117,9 +121,13 @@ public class LambdaRank {
      * Group rankings by each ranking method
      * @throws IOException
      */
-    private void getRankings() throws IOException {
-        Map<String,String> p = Util.readOutline(constants.OUTLINE_CBOR);
-
+    private void getRankings(boolean isTrain) throws IOException {
+    	Map<String,String> p = null;
+    	if(isTrain) {
+    		 p = Util.readOutline(constants.OUTLINE_CBOR);
+    	}else {
+    		 p = Util.readOutline(constants.TEST_OUTLINE_CBOR);
+    	}
         // Ranking Pair for Term Frequency
 
         LambdaRankFeatureSearcher lambdaTF = new LambdaRankFeatureSearcher("TF");
@@ -214,10 +222,13 @@ public class LambdaRank {
 				}
     		
 			}
-			//writer.write(ranking_pairs.toString());
+			
 
       }
     }
+    
+
+    
     
     //Ranking functions to print to feature doc.
     private String getRankingFunctionCase(String rankingFunction) {

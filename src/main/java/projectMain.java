@@ -49,6 +49,7 @@ public class projectMain
       
             constants.setQrelPath(args[2]);
             constants.setQrelOutputPath(args[3]);
+            constants.setTestOutlineCbor(args[4]);
 			Map<String,Map<String,Integer>> qrel = Util.createQrelMap(constants.QREL_PATH);
 
 			//IndexBuilder Index1 = new IndexBuilder();
