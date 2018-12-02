@@ -46,14 +46,16 @@ public class projectMain
             constants.setDirectoryName(query_exp_dest);
 
             //dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
-            entity_dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"entity_indexed_file";
-            entity_bigram_dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"entity_bigram_indexed_file";
-            entity_field_dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"entity_field_indexed_file";
+            //entity_dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"entity_indexed_file";
+            //entity_bigram_dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"entity_bigram_indexed_file";
+            //entity_field_dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"entity_field_indexed_file";
+            entity_field_dest = "//home//team3//entity_field_indexed_file";
+            entity_dest = "//home//team3//entity_indexed_file";
             //constants.setIndexFileName(args[0]);
             //constants.setDirectoryName(query_exp_dest);
 
             constants.setEntityDirectoryName(entity_dest);
-            constants.setEntityBigramDirectoryName(entity_bigram_dest);
+            //constants.setEntityBigramDirectoryName(entity_bigram_dest);
             constants.setDirectoryNameWithEntityField(entity_field_dest);
             //constants.setDirectoryName(System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file");
 
@@ -101,7 +103,7 @@ public class projectMain
             ranked_entities.clear();
             ranked_entities = entity_methods.getBM25QueryExpansionEntities(p);
 
-            constants.methodRunfile.put("BM25Searcher" , BM25Searcher.getOutputFileName());
+            constants.methodRunfile.put("UnigramBM25" , BM25Searcher.getOutputFileName());
 
             System.out.println("-----------------------------------------------------------------------------");
 
