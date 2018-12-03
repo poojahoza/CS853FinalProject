@@ -56,7 +56,7 @@ public class LambdaRank {
         //TODO: Implement evaluator.java from ranklib to produce ranklib file automatically.
         
         //Modifies the produced ranking file from ranklib 
-        undoRankedDoc();
+        //undoRankedDoc(constants.indriInput, constants.indriOutput);
     }
     
     /**
@@ -342,7 +342,7 @@ public class LambdaRank {
     /**
      * Used to return qid mapped values back to original QID's for use in trec eval
      */
-    private void undoRankedDoc() {
+    private void undoRankedDoc(String indriInputFile, String indriOutputFile) {
     	System.out.println("Rewriting Ranklib indri doc");
 		
    	 BufferedReader file;
@@ -350,7 +350,7 @@ public class LambdaRank {
    	 
    	 //Take in the qrel file
 		try {
-			file = new BufferedReader(new FileReader("C:\\Users\\VaughanCoder\\GitWorkspace\\cs853FinalProject\\testIndri.txt"));
+			file = new BufferedReader(new FileReader(indriInputFile));
 	
 			   String line;
 		         StringBuffer inputBuffer = new StringBuffer();
@@ -382,7 +382,7 @@ public class LambdaRank {
 			//System.out.println(inputStr);
 			try {
 				
-		    	  FileOutputStream fileOut = new FileOutputStream("C:\\Users\\VaughanCoder\\GitWorkspace\\cs853FinalProject\\testIndri2.txt");
+		    	  FileOutputStream fileOut = new FileOutputStream(indriOutputFile);
 		          fileOut.write(inputStr.getBytes());
 		          fileOut.close();
 		          
