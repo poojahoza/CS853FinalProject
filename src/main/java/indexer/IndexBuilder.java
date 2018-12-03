@@ -1,4 +1,3 @@
-
 package main.java.indexer;
 import jdk.nashorn.internal.parser.Token;
 import main.java.util.constants;
