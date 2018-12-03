@@ -28,6 +28,7 @@ public class constants
     public static String OUTLINE_CBOR="";
     public static String TRAIN_OUTLINE_CBOR="";
     public static String QREL_PATH="";
+    public static String TRAIN_QREL_PATH = "";
 
     public static float lambda = 0.99f;
     public static float Mu = 1000;
@@ -51,6 +52,8 @@ public class constants
     {
     	TRAIN_OUTLINE_CBOR = d;
     }
+    
+    public static void setTrainQrelPath(String d) { TRAIN_QREL_PATH = d;}
     
     public static void setQrelPath(String d){ QREL_PATH= d;}
 

@@ -68,8 +68,8 @@ public class projectMain
 
 			constants.setOutlineCbor(args[0]);
             constants.setQrelPath(args[1]);
-
-            constants.setTrainOutlineCbor(args[2]);
+            constants.setTrainQrelPath(args[2]);
+            constants.setTrainOutlineCbor(args[3]);
 
 
 
@@ -287,7 +287,7 @@ public class projectMain
             entity_methods.writeEntitiesToFile(ranked_entities, "output_Bigram_BM25_Expanded_Entites_Ranking.txt");
 
 
-            Map<String,Map<String,Integer>> qrel = Util.createQrelMap(constants.QREL_PATH);
+            Map<String,Map<String,Integer>> qrel = Util.createQrelMap(constants.TRAIN_QREL_PATH);
             
             LambdaRank LR = new LambdaRank(qrel);
 		       LR.generateRanklibFile();
