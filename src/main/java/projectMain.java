@@ -28,7 +28,7 @@ public class projectMain
         {
             //dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
             //dest="//home//team3//indexed_file";
-        	/*dest = "C:\\Users\\VaughanCoder\\GitWorkspace\\CS853Docs";
+        	dest = "C:\\Users\\VaughanCoder\\GitWorkspace\\CS853Docs";
             constants.setDirectoryName(dest);
 
             /*constants.setOutlineCbor(args[0]);
@@ -43,7 +43,7 @@ public class projectMain
             q.runPrfIndividualIDF("PRF_IDF",100);
             q.runPrfIndividualDF("PRF_DF",10);*/
             
-        	//constants.setIndexFileName(args[0]);
+        	constants.setIndexFileName(args[0]);
 
             constants.setOutlineCbor(args[1]);
       
@@ -52,9 +52,10 @@ public class projectMain
             constants.setTestOutlineCbor(args[4]);
 			Map<String,Map<String,Integer>> qrel = Util.createQrelMap(constants.QREL_PATH);
 
-			//IndexBuilder Index1 = new IndexBuilder();
-			//Index1.getIndexWriter();
-
+			/*IndexBuilder Index1 = new IndexBuilder();
+			Index1.getIndexWriter();
+*/
+			
 			//create the new lucene Index for bigram
 		   /* LuceneIndexer Index2 = new LuceneIndexer();
 		    Index2.getIndexWriter(true);*/

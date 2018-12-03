@@ -15,11 +15,16 @@ import java.util.Map;
 import main.java.util.Util;
 import main.java.util.constants;
 
+/**
+ * Class generates the lambdaMART features file used in training the model for lambdaBM25
+ *
+ */
 public class LambdaRank {
 
     private Map<String, Map<String, Map<String, float[]>>> ranking_pairs = new LinkedHashMap<String, Map<String, Map<String, float[]>>>();
     private Map<String,Map<String,Integer>> qrel_data;
     private Map<String, Float> QIDToFloat;
+    private Map<Float, String> floatToQid;
 
     /**
      * Constructor that sets the training data
@@ -35,14 +40,23 @@ public class LambdaRank {
      * @throws IOException
      */
     public void generateRanklibFile() throws IOException{
-        getRankings(true);
+        
+    	//Prep a ranking doc for the model to train on
+    	getRankings(true);
         this.createQIDMapToFloat();
         rewriteQrel();
         writeRankingDoc("rankingDoc.txt");
+        
+        //Prep the testDoc for testing the training model
         ranking_pairs = new LinkedHashMap<String, Map<String, Map<String, float[]>>>();
         getRankings(false);
         this.createQIDMapToFloat();
         writeRankingDoc("testDoc.txt");
+        
+        //TODO: Implement evaluator.java from ranklib to produce ranklib file automatically.
+        
+        //Modifies the produced ranking file from ranklib 
+        undoRankedDoc();
     }
     
     /**
@@ -255,6 +269,7 @@ public class LambdaRank {
     //Generate a map based on a generated float and the QID
     private void createQIDMapToFloat() {
     	Map<String, Float> qidToFloat = new LinkedHashMap<String,Float>(); 
+    	Map<Float, String> floatToQid = new LinkedHashMap<Float, String>(); 
     	
     	System.out.println("Entering QID");
     	
@@ -263,8 +278,10 @@ public class LambdaRank {
     	for(String qid: ranking_pairs.keySet()) {
     		f = f + 1.0f;
     		qidToFloat.put(qid, f);
+    		floatToQid.put(f,qid);
     	}
     	this.QIDToFloat = qidToFloat;
+    	this.floatToQid = floatToQid;
     	System.out.println(this.QIDToFloat);
     }
     
@@ -320,6 +337,63 @@ public class LambdaRank {
 				System.out.println("Issue!");
 			}
 
+    }
+    
+    /**
+     * Used to return qid mapped values back to original QID's for use in trec eval
+     */
+    private void undoRankedDoc() {
+    	System.out.println("Rewriting Ranklib indri doc");
+		
+   	 BufferedReader file;
+   	 String inputStr = null;
+   	 
+   	 //Take in the qrel file
+		try {
+			file = new BufferedReader(new FileReader("C:\\Users\\VaughanCoder\\GitWorkspace\\cs853FinalProject\\testIndri.txt"));
+	
+			   String line;
+		         StringBuffer inputBuffer = new StringBuffer();
+	        
+	        //Read in the qrel into a string file
+	        while ((line = file.readLine()) != null) {
+	            inputBuffer.append(line);
+	            inputBuffer.append('\n');
+	        }
+	        
+	        inputStr = inputBuffer.toString();
+	        file.close();
+	        
+			} catch (IOException ioe) {
+				
+				//In case of any io issues
+				System.out.println("Issue!");
+			}
+			
+			System.out.println(floatToQid);
+			if(inputStr != null) { 
+			//Process each qid based on the ranking document and the randomly generated ids for the queries
+			for(Float floatVal: floatToQid.keySet()) {
+				String temp = "(?<![0-9])" + String.valueOf(floatVal).replace(".","\\.");
+				//System.out.println(temp);
+				inputStr = inputStr.replaceAll(temp , String.valueOf(floatToQid.get(floatVal)));
+			}
+	        
+			//System.out.println(inputStr);
+			try {
+				
+		    	  FileOutputStream fileOut = new FileOutputStream("C:\\Users\\VaughanCoder\\GitWorkspace\\cs853FinalProject\\testIndri2.txt");
+		          fileOut.write(inputStr.getBytes());
+		          fileOut.close();
+		          
+		    } catch (IOException ioe) {
+		    	
+				//In case of any io issues
+				System.out.println("Issue!");
+			}
+			}else {
+				System.out.println("There was an error reading the indri file if one was already specified.");
+			}
     }
     
 }

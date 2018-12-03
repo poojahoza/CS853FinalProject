@@ -7,7 +7,7 @@ import java.io.IOException;
 
 /**
  * 
- * An implementation of the Searcher class that utilizes the features present in BM25.
+ * An implementation of the Searcher class that utilizes the features present in BM25
  *
  */
 public class LambdaRankFeatureSearcher extends Searcher{
@@ -111,9 +111,10 @@ public class LambdaRankFeatureSearcher extends Searcher{
 		 @Override
 	     protected float score(BasicStats stats, float freq, float docLen)
 	     {
-	         float IDF =(float) Math.log10((((float) stats.getNumberOfDocuments() - (float) stats.getDocFreq()+.5f)/ ((float) stats.getDocFreq()+.5f)));
+	         float IDF =(float) Math.log10(((float) stats.getNumberOfDocuments() - (float) stats.getDocFreq()+.5f)/ ((float) stats.getDocFreq()+.5f));
+			 return IDF;
+			
 	         
-	         return IDF;
 	     }
 	
 	     @Override
