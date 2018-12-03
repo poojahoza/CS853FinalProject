@@ -83,7 +83,7 @@ public class EntitiesUtils{
         return sortedEntitiesMap;
     }
 
-    private void getSDMRankedEntitiesByCount(Map<String, Map<String,String[]>> entities, Map<String, Map<String, Integer>> ranking_entities){
+    protected void getSDMRankedEntitiesByCount(Map<String, Map<String,String[]>> entities, Map<String, Map<String, Integer>> ranking_entities){
 
         for(Map.Entry<String,Map<String,String[]>> queryMap: entities.entrySet()){
 
@@ -121,18 +121,30 @@ public class EntitiesUtils{
         Map<String, String> expanded_queries = new LinkedHashMap<String, String>();
 
         for(Map.Entry<String, String> cbor_query: outlineCbor.entrySet()){
-            String expanded_query = cbor_query.getValue();
+            ArrayList<String> expanded_query = new ArrayList<String>();
+            expanded_query.add(cbor_query.getValue());
             if(entities.containsKey(cbor_query.getKey())){
                 for(Map.Entry<String, Map<String, Integer>> entityMap: entities.entrySet()){
-                        Iterator<Map.Entry <String, Integer>> entity_iterator = entityMap.getValue().entrySet().iterator();
-                        int i = 0;
-                        while(entity_iterator.hasNext() && i < 5){
-                            expanded_query += entity_iterator.next().getValue();
-                            i += 1;
+                        if(entityMap.getKey().equals(cbor_query.getKey())) {
+                            Iterator<Map.Entry<String, Integer>> entity_iterator = entityMap.getValue().entrySet().iterator();
+                            int i = 0;
+                            while (entity_iterator.hasNext() && i < 1) {
+                                String query_key = entity_iterator.next().getKey();
+                                if(!(expanded_query.contains(query_key))) {
+                                    expanded_query.add(query_key);
+                                    i += 1;
+                                }
+                            }
                         }
                 }
             }
-            expanded_queries.put(cbor_query.getKey(), expanded_query);
+            StringBuilder sb = new StringBuilder();
+            for (String s : expanded_query)
+            {
+                sb.append(s);
+                sb.append("\t");
+            }
+            expanded_queries.put(cbor_query.getKey(), sb.toString());
         }
 
         return expanded_queries;

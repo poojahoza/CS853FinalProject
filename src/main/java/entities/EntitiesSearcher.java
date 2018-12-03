@@ -43,6 +43,11 @@ public class EntitiesSearcher extends Searcher{
             parser = new QueryParser("body", new ShingleAnalyzerWrapper(new EnglishAnalyzer(), 2, 2));
             output_file_name = "Output_BM25_Bigram_Entities_Ranking.txt";
         }
+        else if(indexMethodName.equals("BigramIndex")){
+            searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(constants.BIGRAM_DIRECTORY))));
+            parser = new QueryParser("body", new ShingleAnalyzerWrapper(new EnglishAnalyzer(), 2, 2));
+            output_file_name = "Output_Bigram_BM25_Entities_Ranking.txt";
+        }
     }
 
     protected  Map<String, Map<String,String[]>> entitiesList = new LinkedHashMap<String, Map<String, String[]>>();

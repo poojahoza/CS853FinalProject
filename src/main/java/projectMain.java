@@ -53,7 +53,7 @@ public class projectMain
             //entity_field_dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"entity_field_indexed_file";
             entity_field_dest = "//home//team3//entity_field_indexed_file";
             entity_dest = "//home//team3//entity_indexed_file";
-            //constants.setIndexFileName(args[0]);
+            //constants.setIndexFileName(args[3]);
             //constants.setDirectoryName(query_exp_dest);
 
             constants.setEntityDirectoryName(entity_dest);
@@ -105,6 +105,7 @@ public class projectMain
 
             ranked_entities.clear();
             ranked_entities = entity_methods.getBM25QueryExpansionEntities(p);
+            entity_methods.writeEntitiesToFile(ranked_entities, "output_BM25_Expanded_Entites_Ranking.txt");
 
             constants.methodRunfile.put("UnigramBM25" , BM25Searcher.getOutputFileName());
 
@@ -189,7 +190,6 @@ public class projectMain
             constants.methodRunfile.put("BigramDrichlet", BiDrichlet.getOutputFileName());
 
 
-
             base windowDrichlet = new base("WindowDrichlet");
             windowDrichlet.setWindowDritchlet();
             windowDrichlet.writeRankings(p);
@@ -254,12 +254,42 @@ public class projectMain
             ranked_entities =  entity_methods.getSDMBM25etentities();
             entity_methods.writeEntitiesToFile(ranked_entities, "output_SDM_BM25_Entites_Ranking.txt");
 
+            ranked_entities =  entity_methods.getUnigramLaPlaceentities();
+            entity_methods.writeEntitiesToFile(ranked_entities, "output_Unigram_LaPlace_Entites_Ranking.txt");
+
+            ranked_entities =  entity_methods.getBigramLaPlaceentities();
+            entity_methods.writeEntitiesToFile(ranked_entities, "output_Bigram_LaPlace_Entites_Ranking.txt");
+
+            ranked_entities =  entity_methods.getWindowBigramLaPlaceentities();
+            entity_methods.writeEntitiesToFile(ranked_entities, "output_WindowBigram_LaPlace_Entites_Ranking.txt");
+
+            ranked_entities =  entity_methods.getUnigramJMentities();
+            entity_methods.writeEntitiesToFile(ranked_entities, "output_Unigram_JM_Entites_Ranking.txt");
+
+            ranked_entities =  entity_methods.getBigramJMentities();
+            entity_methods.writeEntitiesToFile(ranked_entities, "output_Bigram_JM_Entites_Ranking.txt");
+
+            ranked_entities =  entity_methods.getWindowJMentities();
+            entity_methods.writeEntitiesToFile(ranked_entities, "output_WindowBigram_JM_Entites_Ranking.txt");
+
+            ranked_entities =  entity_methods.getUnigramDrichletentities();
+            entity_methods.writeEntitiesToFile(ranked_entities, "output_Unigram_Dirchlet_Entites_Ranking.txt");
+
+            ranked_entities =  entity_methods.getBigramDrichletentities();
+            entity_methods.writeEntitiesToFile(ranked_entities, "output_Bigram_Dirchlet_Entites_Ranking.txt");
+
+            ranked_entities =  entity_methods.getWindowDrichletentities();
+            entity_methods.writeEntitiesToFile(ranked_entities, "output_WindowBigram_Dirchlet_Entites_Ranking.txt");
+
+            ranked_entities.clear();
+            ranked_entities = entity_methods.getBigramBM25QueryExpansionEntities(p);
+            entity_methods.writeEntitiesToFile(ranked_entities, "output_Bigram_BM25_Expanded_Entites_Ranking.txt");
+
+
             Map<String,Map<String,Integer>> qrel = Util.createQrelMap(constants.QREL_PATH);
             
             LambdaRank LR = new LambdaRank(qrel);
 		       LR.generateRanklibFile();
-
-
         }
     }
 }
