@@ -25,6 +25,7 @@ public class projectMain
     {
         System.out.println("args[0] --> Outlines CBOR Absolute Path");
         System.out.println("args[1] --> Article  Qrel Absolute Path");
+        System.out.println("args[2] --> Outlines CBOR Test File Absolute Path");
         System.exit(-1 );
     }
     public static void main(String[] args) throws IOException
@@ -36,7 +37,7 @@ public class projectMain
         String query_exp_dest;
         Map<String, Map<String, Integer>> ranked_entities;
 
-        if( args.length < 2 )
+        if( args.length < 3 )
         {
             usage();
         }
