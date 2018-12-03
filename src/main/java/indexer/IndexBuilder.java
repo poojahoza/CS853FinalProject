@@ -85,7 +85,7 @@ public class IndexBuilder
 	 protected  void parseParagraph (IndexWriter indexWriter)
 	 {
 		 
-				// this function shoudl take care of the Reading the CBOR file and indexing it
+				// this function should take care of the Reading the CBOR file and indexing it
 	            FileInputStream fileInputStream2 = null;
 	            try {
 	            	fileInputStream2 = new FileInputStream(new File(constants.FILE_NAME));

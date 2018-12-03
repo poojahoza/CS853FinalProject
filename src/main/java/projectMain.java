@@ -66,10 +66,11 @@ public class projectMain
             constants.setWindowDirectory(System.getProperty("user.dir")+System.getProperty("file.separator")+"Window_file");
 
 
-            constants.setOutlineCbor(args[0]);
+			constants.setOutlineCbor(args[0]);
             constants.setQrelPath(args[1]);
 
-            constants.setTestOutlineCbor(args[2]);
+            constants.setTrainOutlineCbor(args[2]);
+
 
 
             //Create the new lucene Index

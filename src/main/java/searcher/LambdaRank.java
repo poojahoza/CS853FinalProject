@@ -56,7 +56,9 @@ public class LambdaRank {
         //TODO: Implement evaluator.java from ranklib to produce ranklib file automatically.
         
         //Modifies the produced ranking file from ranklib 
-        //undoRankedDoc(constants.indriInput, constants.indriOutput);
+        String indriInput = "C:\\Users\\VaughanCoder\\GitWorkspace\\cs853FinalProject\\testIndri.txt";
+        String indriOutput = "C:\\\\Users\\\\VaughanCoder\\\\GitWorkspace\\\\cs853FinalProject\\\\testIndri2.txt";
+         undoRankedDoc(indriInput, indriOutput);
     }
     
     /**
@@ -137,10 +139,10 @@ public class LambdaRank {
      */
     private void getRankings(boolean isTrain) throws IOException {
     	Map<String,String> p = null;
-    	if(isTrain) {
+    	if(!isTrain) {
     		 p = Util.readOutline(constants.OUTLINE_CBOR);
     	}else {
-    		 p = Util.readOutline(constants.TEST_OUTLINE_CBOR);
+    		 p = Util.readOutline(constants.TRAIN_OUTLINE_CBOR);
     	}
         // Ranking Pair for Term Frequency
 
@@ -321,10 +323,13 @@ public class LambdaRank {
 			//Process each qid based on the ranking document and the randomly generated ids for the queries
 			for(String qid: ranking_pairs.keySet()) {
 				System.out.println("Rewriting Qrel");
-				inputStr = inputStr.replace(qid, String.valueOf(QIDToFloat.get(qid)));
+
+				String temp = String.valueOf(qid).replace("(","\\(").replace(")","\\)")+ "(?!\\%)";
+				System.out.println(temp);
+				inputStr = inputStr.replaceAll(temp, String.valueOf(QIDToFloat.get(qid)));
 			}
 	         
-			System.out.println(inputStr);
+			//System.out.println(inputStr);
 			try {
 				
 		    	  FileOutputStream fileOut = new FileOutputStream(System.getProperty("user.dir")+System.getProperty("file.separator")+"lambdaRankOutput.qrels");
