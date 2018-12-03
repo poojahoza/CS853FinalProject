@@ -3,8 +3,6 @@ package main.java.queryexpansion;
 import java.io.IOException;
 import java.util.*;
 
-import main.java.searcher.BM25;
-
 
 public class QueryExpansion
 {

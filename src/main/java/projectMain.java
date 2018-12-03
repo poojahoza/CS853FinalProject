@@ -67,7 +67,9 @@ public class projectMain
 
             constants.setOutlineCbor(args[0]);
             constants.setQrelPath(args[1]);
+
             constants.setTestOutlineCbor(args[2]);
+
 
             //Create the new lucene Index
            /* IndexBuilder defaultIndex = new IndexBuilder();
@@ -250,11 +252,12 @@ public class projectMain
 
             ranked_entities =  entity_methods.getSDMBM25etentities();
             entity_methods.writeEntitiesToFile(ranked_entities, "output_SDM_BM25_Entites_Ranking.txt");
-            
+
             Map<String,Map<String,Integer>> qrel = Util.createQrelMap(constants.QREL_PATH);
             
             LambdaRank LR = new LambdaRank(qrel);
 		       LR.generateRanklibFile();
+
 
         }
     }

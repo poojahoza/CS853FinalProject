@@ -1,14 +1,23 @@
-package main.java.searcher;
+package main.java.queryexpansion;
+import main.java.searcher.Searcher;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.queryparser.classic.ParseException;
 
+import java.io.File;
 import java.io.IOException;
 
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import java.util.List;
 import java.util.Map;
 
 public class BM25 extends Searcher
@@ -45,10 +54,6 @@ public class BM25 extends Searcher
             return searcher;
         }
 
-//        public Map<String,Map<String,Integer>> getRankings()
-//        {
-//            return ranks;
-//        }
 
         public Map<String,Map<String,Integer>> getRankings(Map<String,String> out)
         {
@@ -124,6 +129,35 @@ public class BM25 extends Searcher
             }
         }
 
+    	    protected List<String> getRankings(ScoreDoc[] scoreDocs, String queryId)
+	    	    throws IOException
+            {
+
+                List<String> rankings = new ArrayList<String>();
+
+
+                for(int ind=0; ind<scoreDocs.length; ind++){
+
+                    //Get the scoring document
+                    ScoreDoc scoringDoc = scoreDocs[ind];
+
+                    //Create the rank document from searcher
+                    Document rankedDoc = searcher.doc(scoringDoc.doc);
+    //				System.out.println(searcher.explain(queryObj, scoringDoc.doc));
+
+                    //Print out the results from the rank document
+                    String docScore = String.valueOf(scoringDoc.score);
+                    String paraId = rankedDoc.getField("id").stringValue();
+                    //String paraBody = rankedDoc.getField("body").stringValue();
+
+                    String paraRank = String.valueOf(ind+1);
+                    rankings.add(queryId + " Q0 " + paraId + " " + paraRank + " " + docScore + " "+teamName + "-" + methodName);
+                    createRankingQueryDocPair(queryId, paraId, Integer.valueOf(paraRank));
+                }
+
+                return rankings;
+	    }
+
         public TopDocs returnTopDocs(String qID)
         {
                 TopDocs t = null;
@@ -158,5 +192,48 @@ public class BM25 extends Searcher
             }
             return docString;
         }
+
+    //@Override
+    public void writeRankings(Map<String,String> p)
+    {
+        Path file = Paths.get(output_file_name);
+
+        try {
+            if(output_file_name != null){
+
+                File e = new File(output_file_name);
+                if (e.exists()) {
+                    e.delete();
+                }
+                Files.createFile(file);
+            }
+            else{
+                System.out.println("Output file name is null. Please check");
+                System.exit(1);
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for(Map.Entry<String,String> m:p.entrySet())
+        {
+            try {
+                TopDocs searchDocs = this.performSearch(m.getValue(), 100);
+                ScoreDoc[] scoringDocuments = searchDocs.scoreDocs;
+                List<String> formattedRankings = this.getRankings(scoringDocuments, m.getKey());
+                Files.write(file, formattedRankings, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
+
+            }
+            catch (ParseException e)
+            {
+                e.printStackTrace();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
 
 }

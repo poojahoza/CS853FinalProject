@@ -18,13 +18,12 @@ public class constants
     public static Map<String, String> methodRunfile = new LinkedHashMap<>();
     public static Map<String, Map<String, Map<String, String[]>>> lmQueryDocPair = new LinkedHashMap<>();
     public static Map<String, Map<String, Map<String, Float>>> sdmQueryDocPair = new LinkedHashMap<>();
+    public static Map<String, Map<String, Map<String, Float>>> baseQuerydocPairScore = new LinkedHashMap<>();
+    public static Map<String, Map<String, Map<String, Integer>>> baseQuerydocPairRank = new LinkedHashMap<>();
     public static final int windowSize = 6;
-
-
 
     public final static String Prop = "C:\\Users\\amith\\IdeaProjects\\CS853FinalProject\\src\\main\\java\\config.properties";
     //public final static String Prop = "//home//ar1184//CS853FinalProject//src//main//java//config.properties";
-
 
     public static String OUTLINE_CBOR="";
     public static String TEST_OUTLINE_CBOR="";

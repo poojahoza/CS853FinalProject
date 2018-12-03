@@ -1,7 +1,5 @@
 package main.java.queryexpansion;
 
-import main.java.searcher.BM25;
-
 /*Import statements from the CS853 package*/
 
 import main.java.util.Util;
