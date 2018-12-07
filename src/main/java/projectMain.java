@@ -61,9 +61,9 @@ public class projectMain
             constants.setDirectoryNameWithEntityField(entity_field_dest);
             //constants.setDirectoryName(System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file");
 
-            constants.setBigramDirectory(System.getProperty("user.dir")+System.getProperty("file.separator")+"BigramIndexed_file");
+            constants.setBigramDirectory("//home//team3//BigramIndexed_file");
 
-            constants.setWindowDirectory(System.getProperty("user.dir")+System.getProperty("file.separator")+"Window_file");
+            constants.setWindowDirectory("//home//team3//Window_file");
 
 
 			constants.setOutlineCbor(args[0]);
