@@ -107,7 +107,9 @@ public class Util {
                     mp.put(outKey, temp);
                 }
             } catch (NullPointerException n) {
+            	System.out.println(mp);
                 System.out.println("Error 110: " +n.getMessage());
+                break;
             } catch (IOException e) {
                 System.out.println("Error 112: " +e.getMessage());
             }
