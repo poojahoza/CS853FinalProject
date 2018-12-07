@@ -148,7 +148,7 @@ public class LambdaRank {
     		 p = Util.readOutline(constants.OUTLINE_CBOR);
     	}else {
     		 p = Util.readOutline(constants.TRAIN_OUTLINE_CBOR);
-    		 System.out.println(p.size());
+    		//System.out.println(p.size());
     	}
         // Ranking Pair for Term Frequency
 
@@ -334,10 +334,10 @@ public class LambdaRank {
 			
 			//Process each qid based on the ranking document and the randomly generated ids for the queries
 			for(String qid: ranking_pairs.keySet()) {
-				System.out.println("Rewriting Qrel");
+				//System.out.println("Rewriting Qrel");
 
 				String temp = String.valueOf(qid).replace("(","\\(").replace(")","\\)")+ "(?!\\%)";
-				System.out.println("Temp: " + temp);
+				//System.out.println("Temp: " + temp);
 				inputStr = inputStr.replaceAll(temp, String.valueOf(QIDToFloat.get(qid)));
 			}
 	         
