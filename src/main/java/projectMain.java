@@ -37,7 +37,7 @@ public class projectMain
         String query_exp_dest;
         Map<String, Map<String, Integer>> ranked_entities;
 
-        if( args.length < 3 )
+        if( args.length < 4 )
         {
             usage();
         }
