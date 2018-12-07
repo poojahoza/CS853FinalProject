@@ -86,7 +86,7 @@ public class projectMain
 
             Map<String,String> p = Util.readOutline(constants.OUTLINE_CBOR);
 
-            QueryExpansion q= new QueryExpansion(p);
+         /*   QueryExpansion q= new QueryExpansion(p);
             q.runBM25("BM25",10);
             q.runPRF("PRF",10);
             q.runPrfIndividual("PRF_PER_QUERY_TERM",10);
@@ -96,7 +96,7 @@ public class projectMain
 
 
             /*Searcher BM25Searcher = new Searcher();
-            BM25Searcher.writeRankings(p);*/
+            BM25Searcher.writeRankings(p);
             base BM25Searcher = new base("UnigramBM25");
             BM25Searcher.writeRankings(p);
 
@@ -114,7 +114,7 @@ public class projectMain
 
 
             /*EntityIndexBuilder el = new EntityIndexBuilder();
-            el.getEntityIndexWriter();*/
+            el.getEntityIndexWriter();
 
             ranked_entities.clear();
             ranked_entities = entity_methods.getBM25entitiesAsBody(p);
@@ -124,7 +124,7 @@ public class projectMain
             elb.getEntityIndexWriter();
             ranked_entities.clear();
             ranked_entities = entity_methods.getBM25entitiesbigramAsBody(p);
-            entity_methods.writeEntitiesToFile(ranked_entities, "output_BM25_Bigram_Entites_Body_Ranking.txt");*/
+            entity_methods.writeEntitiesToFile(ranked_entities, "output_BM25_Bigram_Entites_Body_Ranking.txt");
 
 
 
@@ -286,7 +286,7 @@ public class projectMain
             ranked_entities = entity_methods.getBigramBM25QueryExpansionEntities(p);
             entity_methods.writeEntitiesToFile(ranked_entities, "output_Bigram_BM25_Expanded_Entites_Ranking.txt");
 
-
+            */
             Map<String,Map<String,Integer>> qrel = Util.createQrelMap(constants.TRAIN_QREL_PATH);
             
             LambdaRank LR = new LambdaRank(qrel);
