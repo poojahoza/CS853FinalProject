@@ -391,7 +391,7 @@ public class LambdaRank {
 			if(inputStr != null) { 
 			//Process each qid based on the ranking document and the randomly generated ids for the queries
 			for(Float floatVal: floatToQid.keySet()) {
-				String temp = "(?<![0-9])" + String.valueOf(floatVal).replace(".","\\.");
+				String temp = "(?<![0-9])" + String.valueOf(floatVal).replace(".","\\.")+ "(?=\\s)";
 				//System.out.println(temp);
 				inputStr = inputStr.replaceAll(temp , String.valueOf(floatToQid.get(floatVal)));
 			}
