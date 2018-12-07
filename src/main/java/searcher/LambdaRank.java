@@ -40,7 +40,8 @@ public class LambdaRank {
      * @throws IOException
      */
     public void generateRanklibFile() throws IOException{
-        
+        System.out.println("Query Doc Pair: " + constants.queryDocPair.size());
+    	
     	//Prep a ranking doc for the model to train on
     	getRankings(true);
         this.createQIDMapToFloat();
@@ -56,8 +57,10 @@ public class LambdaRank {
         //TODO: Implement evaluator.java from ranklib to produce ranklib file automatically.
         
         //Modifies the produced ranking file from ranklib 
-        String indriInput = "C:\\Users\\VaughanCoder\\GitWorkspace\\cs853FinalProject\\testIndri.txt";
-        String indriOutput = "C:\\\\Users\\\\VaughanCoder\\\\GitWorkspace\\\\cs853FinalProject\\\\testIndri2.txt";
+       // String indriInput = "C:\\Users\\VaughanCoder\\GitWorkspace\\cs853FinalProject\\testIndri.txt";
+        //String indriOutput = "C:\\Users\\VaughanCoder\\GitWorkspace\\cs853FinalProject\\testIndri2.txt";
+         String indriInput = "//home//team3//testIndri.txt";
+        String indriOutput = "//home//team3//testIndri2.txt";
          undoRankedDoc(indriInput, indriOutput);
     }
     
@@ -88,6 +91,8 @@ public class LambdaRank {
      */
     private void createRankingPair(String function_key, String query_key, String doc_id, float[] rank)
     {
+    	
+    	
     	
     	   if(ranking_pairs.containsKey(query_key))// query_key
            {
@@ -143,6 +148,7 @@ public class LambdaRank {
     		 p = Util.readOutline(constants.OUTLINE_CBOR);
     	}else {
     		 p = Util.readOutline(constants.TRAIN_OUTLINE_CBOR);
+    		 System.out.println(p.size());
     	}
         // Ranking Pair for Term Frequency
 
@@ -170,12 +176,18 @@ public class LambdaRank {
 
         }
     
+    
+    
+    
+    
     /**
      * Collects the function, queryID and relevancy to process each document ranking pair using the create ranking pair function
      * @param function_key
      */
     private void callcreateRankingPair(String function_key){
 
+    	System.out.println("QueryDoc size: " + constants.queryDocPair.size());
+   
         for (Map.Entry<String, Map<String,Integer>> Query : constants.queryDocPair.entrySet()) {
             String queryID = Query.getKey();
             Map<String, Integer> docIDRank = Query.getValue();
@@ -284,7 +296,7 @@ public class LambdaRank {
     	}
     	this.QIDToFloat = qidToFloat;
     	this.floatToQid = floatToQid;
-    	System.out.println(this.QIDToFloat);
+    	System.out.println("Qid to float: " +this.QIDToFloat);
     }
     
     /**
@@ -325,7 +337,7 @@ public class LambdaRank {
 				System.out.println("Rewriting Qrel");
 
 				String temp = String.valueOf(qid).replace("(","\\(").replace(")","\\)")+ "(?!\\%)";
-				System.out.println(temp);
+				System.out.println("Temp: " + temp);
 				inputStr = inputStr.replaceAll(temp, String.valueOf(QIDToFloat.get(qid)));
 			}
 	         
