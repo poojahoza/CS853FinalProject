@@ -57,10 +57,10 @@ public class LambdaRank {
         //TODO: Implement evaluator.java from ranklib to produce ranklib file automatically.
         
         //Modifies the produced ranking file from ranklib 
-       // String indriInput = "C:\\Users\\VaughanCoder\\GitWorkspace\\cs853FinalProject\\testIndri.txt";
-        //String indriOutput = "C:\\Users\\VaughanCoder\\GitWorkspace\\cs853FinalProject\\testIndri2.txt";
-         String indriInput = "//home//team3//testIndri.txt";
-        String indriOutput = "//home//team3//testIndri2.txt";
+        String indriInput = "C:\\Users\\VaughanCoder\\GitWorkspace\\cs853FinalProject\\testIndri.txt";
+        String indriOutput = "C:\\Users\\VaughanCoder\\GitWorkspace\\cs853FinalProject\\testIndri2.txt";
+       //  String indriInput = "//home//team3//testIndri.txt";
+        //String indriOutput = "//home//team3//testIndri2.txt";
          undoRankedDoc(indriInput, indriOutput);
     }
     
@@ -296,7 +296,7 @@ public class LambdaRank {
     	}
     	this.QIDToFloat = qidToFloat;
     	this.floatToQid = floatToQid;
-    	System.out.println("Qid to float: " +this.QIDToFloat);
+    	//System.out.println("Qid to float: " +this.QIDToFloat);
     }
     
     /**
