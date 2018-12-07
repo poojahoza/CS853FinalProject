@@ -13,7 +13,7 @@ public class Util {
         try {
             qrelStream = new FileInputStream(new File(filename));
         } catch (FileNotFoundException fnf) {
-            System.out.println(fnf.getMessage());
+            System.out.println("Error 16: " +fnf.getMessage());
 
         }
         for (Data.Page page : DeserializeData.iterableAnnotations(qrelStream))
@@ -32,7 +32,7 @@ public class Util {
         try {
             qrelStream = new FileInputStream(new File(filename));
         } catch (FileNotFoundException fnf) {
-            System.out.println(fnf.getMessage());
+            System.out.println("Error 35: " +fnf.getMessage());
 
         }
         for (Data.Page page : DeserializeData.iterableAnnotations(qrelStream))
@@ -79,7 +79,7 @@ public class Util {
             br = new BufferedReader(fr);
 
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error 82: " + e.getMessage());
         }
 
         while (true) {
@@ -107,9 +107,9 @@ public class Util {
                     mp.put(outKey, temp);
                 }
             } catch (NullPointerException n) {
-                System.out.println(n.getMessage());
+                System.out.println("Error 110: " +n.getMessage());
             } catch (IOException e) {
-                System.out.println(e.getMessage());
+                System.out.println("Error 112: " +e.getMessage());
             }
 
         }
@@ -145,7 +145,7 @@ public class Util {
             br = new BufferedReader(fr);
 
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error Line 148: " +e.getMessage());
         }
 
         while (true) {
@@ -173,9 +173,9 @@ public class Util {
                     mp.put(outKey, temp);
                 }
             } catch (NullPointerException n) {
-                System.out.println(n.getMessage());
+                System.out.println("Error 176: " +n.getMessage());
             } catch (IOException e) {
-                System.out.println(e.getMessage());
+                System.out.println("Error 178: " +e.getMessage());
             }
 
         }
@@ -196,7 +196,7 @@ public class Util {
             br = new BufferedReader(fr);
 
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error 199: " +e.getMessage());
         }
 
         while (true) {
@@ -224,9 +224,9 @@ public class Util {
                     mp.put(outKey, temp);
                 }
             } catch (NullPointerException n) {
-                System.out.println(n.getMessage());
+                System.out.println("Error 227: " +n.getMessage());
             } catch (IOException e) {
-                System.out.println(e.getMessage());
+                System.out.println( "Error 229: " +e.getMessage());
             }
 
         }
