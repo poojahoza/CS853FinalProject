@@ -25,7 +25,8 @@ public class projectMain
     {
         System.out.println("args[0] --> Outlines CBOR Absolute Path");
         System.out.println("args[1] --> Article  Qrel Absolute Path");
-        System.out.println("args[2] --> Outlines CBOR Test File Absolute Path");
+        System.out.println("args[3] --> Article Qrel Train File Absolute Path");
+        System.out.println("args[4] --> Outlines CBOR Train File Absolute Path");
         System.exit(-1 );
     }
     public static void main(String[] args) throws IOException
