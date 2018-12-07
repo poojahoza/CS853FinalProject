@@ -40,7 +40,7 @@ public class LambdaRank {
      * @throws IOException
      */
     public void generateRanklibFile() throws IOException{
-        System.out.println("Query Doc Pair: " + constants.queryDocPair.size());
+   
     	
     	//Prep a ranking doc for the model to train on
     	getRankings(true);
@@ -185,8 +185,6 @@ public class LambdaRank {
      * @param function_key
      */
     private void callcreateRankingPair(String function_key){
-
-    	System.out.println("QueryDoc size: " + constants.queryDocPair.size());
    
         for (Map.Entry<String, Map<String,Integer>> Query : constants.queryDocPair.entrySet()) {
             String queryID = Query.getKey();
