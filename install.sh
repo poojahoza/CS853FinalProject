@@ -22,11 +22,14 @@ sleep 4
 
 function change_path_target()
 {
+	echo "************CS853-Team3***********************************"
+	echo ""
 	echo "TEST OUTLINE CBOR file=$1"
 	echo "TEST QREL file(AKA Ground Truth)=$2"
 	echo "TRAIN QREL file(AKA Ground Truth=$3"
 	echo "TRAIN OUTLINE CBOR file=$4"
-	
+	echo ""
+	echo "**********************************************************"
 	pwdCurrent=$(pwd)
 	pwdCurrent=$pwdCurrent/target/CS853project-1.0-SNAPSHOT-jar-with-dependencies.jar
 	java -jar $pwdCurrent $1 $2 $3 $4
