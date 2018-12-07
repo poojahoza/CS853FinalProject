@@ -118,7 +118,7 @@ public class ExpansionUtils
     private void readVector()
         {
             System.out.println("Loading Wording Vector......");
-            GLOVE = this.readWordVectors(glovefile_200d);
+            GLOVE = this.readWordVectors(glovefile_300d);
         }
 
     /**
