@@ -44,7 +44,12 @@ public class projectMain
         else
         {
             //dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
-            query_exp_dest="//home//team3//indexed_file";
+        	
+        	
+        	
+        	
+            //query_exp_dest="//home//team3//indexed_file";
+        	query_exp_dest = System.getProperty("user.dir")+System.getProperty("file.separator");
             constants.setDirectoryName(query_exp_dest);
 
             //dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
@@ -85,7 +90,7 @@ public class projectMain
             ibe.getIndexWriter();*/
 
             Map<String,String> p = Util.readOutline(constants.OUTLINE_CBOR);
-
+            System.out.println("Waiting");
          /*   QueryExpansion q= new QueryExpansion(p);
             q.runBM25("BM25",10);
             q.runPRF("PRF",10);
@@ -289,8 +294,8 @@ public class projectMain
             */
             Map<String,Map<String,Integer>> qrel = Util.createQrelMap(constants.TRAIN_QREL_PATH);
             
-            LambdaRank LR = new LambdaRank(qrel);
-		       LR.generateRanklibFile();
+            /*LambdaRank LR = new LambdaRank(qrel);
+		       LR.generateRanklibFile();*/
         }
     }
 }
