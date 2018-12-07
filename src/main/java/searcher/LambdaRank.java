@@ -384,14 +384,14 @@ public class LambdaRank {
 			} catch (IOException ioe) {
 				
 				//In case of any io issues
-				System.out.println("Issue!");
+				System.out.println("Issue reading from Indri Input File: " + ioe.getMessage());
 			}
 			
-			//System.out.println(floatToQid);
+			System.out.println(floatToQid);
 			if(inputStr != null) { 
 			//Process each qid based on the ranking document and the randomly generated ids for the queries
 			for(Float floatVal: floatToQid.keySet()) {
-				String temp = "(?<![0-9])" + String.valueOf(floatVal).replace(".","\\.");
+				String temp = "(?<![0-9])" + String.valueOf(floatVal).replace(".","\\.")+ "(?=\\s)";
 				//System.out.println(temp);
 				inputStr = inputStr.replaceAll(temp , String.valueOf(floatToQid.get(floatVal)));
 			}
@@ -406,7 +406,7 @@ public class LambdaRank {
 		    } catch (IOException ioe) {
 		    	
 				//In case of any io issues
-				System.out.println("Issue!");
+				System.out.println("Issue writing to Indri Output File: " + ioe.getMessage());
 			}
 			}else {
 				System.out.println("There was an error reading the indri file if one was already specified.");
