@@ -40,7 +40,7 @@ public class LambdaRank {
      * @throws IOException
      */
     public void generateRanklibFile() throws IOException{
-   
+        System.out.println("Query Doc Pair: " + constants.queryDocPair.size());
     	
     	//Prep a ranking doc for the model to train on
     	getRankings(true);
@@ -57,10 +57,10 @@ public class LambdaRank {
         //TODO: Implement evaluator.java from ranklib to produce ranklib file automatically.
         
         //Modifies the produced ranking file from ranklib 
-        String indriInput = "C:\\Users\\VaughanCoder\\GitWorkspace\\cs853FinalProject\\testIndri.txt";
-        String indriOutput = "C:\\Users\\VaughanCoder\\GitWorkspace\\cs853FinalProject\\testIndri2.txt";
-       //  String indriInput = "//home//team3//testIndri.txt";
-        //String indriOutput = "//home//team3//testIndri2.txt";
+       // String indriInput = "C:\\Users\\VaughanCoder\\GitWorkspace\\cs853FinalProject\\testIndri.txt";
+        //String indriOutput = "C:\\Users\\VaughanCoder\\GitWorkspace\\cs853FinalProject\\testIndri2.txt";
+         String indriInput = "//home//team3//testIndri.txt";
+        String indriOutput = "//home//team3//testIndri2.txt";
          undoRankedDoc(indriInput, indriOutput);
     }
     
@@ -185,6 +185,8 @@ public class LambdaRank {
      * @param function_key
      */
     private void callcreateRankingPair(String function_key){
+
+    	System.out.println("QueryDoc size: " + constants.queryDocPair.size());
    
         for (Map.Entry<String, Map<String,Integer>> Query : constants.queryDocPair.entrySet()) {
             String queryID = Query.getKey();
@@ -294,7 +296,7 @@ public class LambdaRank {
     	}
     	this.QIDToFloat = qidToFloat;
     	this.floatToQid = floatToQid;
-    	//System.out.println("Qid to float: " +this.QIDToFloat);
+    	System.out.println("Qid to float: " +this.QIDToFloat);
     }
     
     /**
@@ -382,10 +384,10 @@ public class LambdaRank {
 			} catch (IOException ioe) {
 				
 				//In case of any io issues
-				System.out.println("Issue!");
+				System.out.println("Issue reading from Indri Input File: " + ioe.getMessage());
 			}
 			
-			//System.out.println(floatToQid);
+			System.out.println(floatToQid);
 			if(inputStr != null) { 
 			//Process each qid based on the ranking document and the randomly generated ids for the queries
 			for(Float floatVal: floatToQid.keySet()) {
@@ -404,7 +406,7 @@ public class LambdaRank {
 		    } catch (IOException ioe) {
 		    	
 				//In case of any io issues
-				System.out.println("Issue!");
+				System.out.println("Issue writing to Indri Output File: " + ioe.getMessage());
 			}
 			}else {
 				System.out.println("There was an error reading the indri file if one was already specified.");
